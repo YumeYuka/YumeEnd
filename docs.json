@@ -153,7 +153,7 @@
       "rating": "general",
       "revisit-after": "7 days",
       "language": "zh-CN",
-      "copyright": "梦璃 YumeYuka YumeLira ",
+      "copyright": "梦璃 YumeYuka",
       "distribution": "global",
       "HandheldFriendly": "True",
       "MobileOptimized": "320",
@@ -164,7 +164,7 @@
       "msapplication-TileColor": "#f56c6c",
       "og:type": "website",
       "og:image": "https://s3.yumeyuka.plus/2025/23-22-30.webp",
-      "og:site_name": "梦璃",
+      "og:site_name": "真正的成长并非抹杀过去的自己，而是在接纳伤痛后,依然有选择善良的勇气",
       "og:locale": "zh_CN",
       "canonical": "https://yumeyuka.icu"
     }
