@@ -1,0 +1,192 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "theme": "mint",
+  "name": "梦璃",
+  "description": "梦璃 YumeYuka YumeLira ",
+  "colors": {
+    "primary": "#f56c6c",
+    "light": "#fbf7f7",
+    "dark": "#ef8e8e"
+  },
+  "fonts": {
+    "heading": {
+      "family": "Ubuntu Mono",
+      "weight": 700
+    },
+    "body": {
+      "family": "JetBrains Mono",
+      "weight": 400
+    }
+  },
+  "icons": {
+    "library": "lucide"
+  },
+  "favicon": "/logo/logo.jpg",
+  "navigation": {
+    "languages": [
+      {
+        "language": "zh",
+        "dropdowns": [
+          {
+            "dropdown": "幻想乡",
+            "icon": "rss",
+            "groups": [
+              {
+                "group": "简介",
+                "icon": "book-open",
+                "pages": ["index", "about"]
+              },
+              {
+                "group": "最新发布",
+                "icon": "calendar",
+                "pages": [
+                  "blog/Jetbrains-AI-Proxy",
+                  "blog/YumeBot",
+                  "blog/edgeone-trap-diary",
+                  "blog/apex-to-www",
+                  "blog/CloudPress"
+                ]
+              }
+            ]
+          },
+          {
+            "dropdown": "YumeBox",
+            "icon": "arrow-up-down",
+            "pages": [
+              {
+                "group": "开始使用",
+                "icon": "book-open",
+                "pages": [
+                  "yumebox/index",
+                  "yumebox/guide/install",
+                  "yumebox/guide/building"
+                ]
+              },
+              {
+                "group": "更新日志",
+                "icon": "history",
+                "pages": ["yumebox/update/history"]
+              }
+            ]
+          },
+          {
+            "dropdown": "YumeBot",
+            "icon": "drafting-compass",
+            "pages": [
+              {
+                "group": "开始使用",
+                "icon": "book-open",
+                "pages": [
+                  "yumebot/index",
+                  "yumebot/guide/introduction",
+                  "yumebot/guide/quick-start",
+                  "yumebot/guide/plugin-marketplace"
+                ]
+              },
+              {
+                "group": "插件开发",
+                "icon": "code",
+                "pages": [
+                  "yumebot/guide/plugin-development"
+                ]
+              },
+              {
+                "group": "API 参考",
+                "icon": "code",
+                "pages": [
+                  "yumebot/api/listeners",
+                  "yumebot/api/messages",
+                  "yumebot/api/groups",
+                  "yumebot/api/friends"
+                ]
+              },
+              {
+                "group": "协议文档",
+                "icon": "file-text",
+                "pages": [
+                  "yumebot/protocol/events",
+                  "yumebot/protocol/segments",
+                  "yumebot/protocol/filters"
+                ]
+              },
+              {
+                "group": "更新日志",
+                "icon": "history",
+                "pages": [
+                  "yumebot/update/history"
+                ]
+              }
+            ]
+          }
+        ],
+        "global": {
+          "anchors": [
+            {
+              "anchor": "Github",
+              "icon": "github",
+              "href": "https://github.com/YumeYuka"
+            },
+            {
+              "anchor": "加入群组",
+              "icon": "telegram",
+              "href": "https://t.me/OOM_Group"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "logo": {
+    "light": "/logo/logo.jpg",
+    "dark": "/logo/logo.jpg"
+  },
+  "seo": {
+    "metatags": {
+      "robots": "index, follow",
+      "charset": "UTF-8",
+      "viewport": "width=device-width, initial-scale=1.0",
+      "googlebot": "index, follow",
+      "generator": "Mintlify",
+      "theme-color": "#f56c6c",
+      "format-detection": "telephone=no",
+      "referrer": "origin",
+      "rating": "general",
+      "revisit-after": "7 days",
+      "language": "zh-CN",
+      "copyright": "梦璃 YumeYuka YumeLira ",
+      "distribution": "global",
+      "HandheldFriendly": "True",
+      "MobileOptimized": "320",
+      "apple-mobile-web-app-capable": "yes",
+      "apple-mobile-web-app-status-bar-style": "black",
+      "apple-mobile-web-app-title": "梦璃",
+      "application-name": "梦璃",
+      "msapplication-TileColor": "#f56c6c",
+      "og:type": "website",
+      "og:image": "/logo/logo.jpg",
+      "og:site_name": "梦璃",
+      "og:locale": "zh_CN",
+      "canonical": "https://yumeyuka.icu"
+    }
+  },
+  "metadata": {
+    "timestamp": true
+  },
+  "contextual": {
+    "options": ["copy", "view", "chatgpt", "claude", "perplexity"]
+  },
+  "footer": {
+    "socials": {
+      "telegram": "https://t.me/OOM_Group",
+      "github": "https://github.com/YumeYuka",
+      "discord": "https://discord.gg/4HQ2DaqKX"
+    }
+  },
+  "errors": {
+    "404": {
+      "redirect": true,
+      "title": "找不到页面",
+      "description": "这个_页面_到底**发生了什么**？"
+    }
+  }
+}

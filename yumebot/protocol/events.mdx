@@ -1,0 +1,475 @@
+---
+title: "事件类型"
+sidebarTitle: "事件类型"
+description: "NapCatQQ 事件类型定义"
+icon: "zap"
+---
+
+
+## 导入
+
+```kotlin
+import plus.yumeyuka.yumebot.protocol.message.*
+import plus.yumeyuka.yumebot.protocol.event.*
+import plus.yumeyuka.yumebot.protocol.sender.*
+```
+
+<Note>
+  YumeBot 事件系统专为 NapCatQQ 设计，支持完整的消息、通知和请求事件处理。
+</Note>
+
+## 消息事件
+
+### OB11GroupMessage
+
+群消息事件。
+
+```kotlin
+data class OB11GroupMessage(
+    val time: Long,              // 时间戳
+    val selfId: Long,            // 机器人 QQ 号
+    val postType: PostType,      // 事件类型
+    val messageType: MessageType, // 消息类型
+    val subType: String,         // 子类型（normal/anonymous/notice）
+    val messageId: Long,         // 消息 ID
+    val groupId: Long,           // 群号
+    val userId: Long,            // 发送者 QQ 号
+    val anonymous: Anonymous?,   // 匿名信息
+    val message: List<OB11Segment>, // 消息段列表
+    val rawMessage: String,      // 原始消息文本
+    val font: Int,              // 字体
+    val sender: GroupSender      // 发送者信息
+)
+```
+
+**GroupSender 结构**
+
+```kotlin
+data class GroupSender(
+    val userId: Long,           // QQ 号
+    val nickname: String,       // 昵称
+    val card: String,           // 群名片
+    val sex: String,            // 性别
+    val age: Int,               // 年龄
+    val area: String,           // 地区
+    val level: String,          // 等级
+    val role: String,           // 角色（owner/admin/member）
+    val title: String           // 专属头衔
+)
+```
+
+### OB11PrivateMessage
+
+私聊消息事件。
+
+```kotlin
+data class OB11PrivateMessage(
+    val time: Long,              // 时间戳
+    val selfId: Long,            // 机器人 QQ 号
+    val postType: PostType,      // 事件类型
+    val messageType: MessageType, // 消息类型
+    val subType: String,         // 子类型（friend/group/other）
+    val messageId: Long,         // 消息 ID
+    val userId: Long,            // 发送者 QQ 号
+    val message: List<OB11Segment>, // 消息段列表
+    val rawMessage: String,      // 原始消息文本
+    val font: Int,              // 字体
+    val sender: FriendSender     // 发送者信息
+)
+```
+
+**FriendSender 结构**
+
+```kotlin
+data class FriendSender(
+    val userId: Long,           // QQ 号
+    val nickname: String,       // 昵称
+    val sex: String,            // 性别
+    val age: Int                // 年龄
+)
+```
+
+## 通知事件
+
+### GroupIncreaseNotice
+
+群成员增加通知。
+
+```kotlin
+data class GroupIncreaseNotice(
+    val time: Long,             // 时间戳
+    val selfId: Long,           // 机器人 QQ 号
+    val postType: PostType,     // 事件类型
+    val noticeType: String,     // 通知类型
+    val groupId: Long,          // 群号
+    val operatorId: Long,       // 操作者 QQ 号
+    val userId: Long,           // 加入者 QQ 号
+    val subType: GroupIncreaseSubType // 子类型（approve/invite）
+)
+```
+
+### GroupDecreaseNotice
+
+群成员减少通知。
+
+```kotlin
+data class GroupDecreaseNotice(
+    val time: Long,             // 时间戳
+    val selfId: Long,           // 机器人 QQ 号
+    val postType: PostType,     // 事件类型
+    val noticeType: String,     // 通知类型
+    val groupId: Long,          // 群号
+    val operatorId: Long,       // 操作者 QQ 号
+    val userId: Long,           // 离开者 QQ 号
+    val subType: GroupDecreaseSubType // 子类型（leave/kick/kick_me）
+)
+```
+
+### GroupBanNotice
+
+群禁言通知。
+
+```kotlin
+data class GroupBanNotice(
+    val time: Long,             // 时间戳
+    val selfId: Long,           // 机器人 QQ 号
+    val postType: PostType,     // 事件类型
+    val noticeType: String,     // 通知类型
+    val groupId: Long,          // 群号
+    val operatorId: Long,       // 操作者 QQ 号
+    val userId: Long,           // 被禁言者 QQ 号
+    val duration: Long,         // 禁言时长（秒）
+    val subType: GroupBanSubType // 子类型（ban/lift_ban）
+)
+```
+
+### GroupRecallNotice
+
+群消息撤回通知。
+
+```kotlin
+data class GroupRecallNotice(
+    val time: Long,             // 时间戳
+    val selfId: Long,           // 机器人 QQ 号
+    val postType: PostType,     // 事件类型
+    val noticeType: String,     // 通知类型
+    val groupId: Long,          // 群号
+    val operatorId: Long,       // 操作者 QQ 号
+    val userId: Long,           // 消息发送者 QQ 号
+    val messageId: Long         // 被撤回的消息 ID
+)
+```
+
+### FriendRecallNotice
+
+好友消息撤回通知。
+
+```kotlin
+data class FriendRecallNotice(
+    val time: Long,             // 时间戳
+    val selfId: Long,           // 机器人 QQ 号
+    val postType: PostType,     // 事件类型
+    val noticeType: String,     // 通知类型
+    val userId: Long,           // 好友 QQ 号
+    val messageId: Long         // 被撤回的消息 ID
+)
+```
+
+### GroupPokeEvent
+
+群戳一戳事件。
+
+```kotlin
+data class GroupPokeEvent(
+    val time: Long,             // 时间戳
+    val selfId: Long,           // 机器人 QQ 号
+    val postType: PostType,     // 事件类型
+    val noticeType: String,     // 通知类型
+    val subType: String,        // 子类型（poke）
+    val groupId: Long,          // 群号
+    val userId: Long,           // 发送者 QQ 号
+    val targetId: Long          // 被戳者 QQ 号
+)
+```
+
+### FriendPokeEvent
+
+好友戳一戳事件。
+
+```kotlin
+data class FriendPokeEvent(
+    val time: Long,             // 时间戳
+    val selfId: Long,           // 机器人 QQ 号
+    val postType: PostType,     // 事件类型
+    val noticeType: String,     // 通知类型
+    val subType: String,        // 子类型（poke）
+    val userId: Long,           // 发送者 QQ 号
+    val targetId: Long          // 被戳者 QQ 号
+)
+```
+
+### GroupAdminNotice
+
+群管理员变动通知。
+
+```kotlin
+data class GroupAdminNotice(
+    val time: Long,             // 时间戳
+    val selfId: Long,           // 机器人 QQ 号
+    val postType: PostType,     // 事件类型
+    val noticeType: String,     // 通知类型
+    val groupId: Long,          // 群号
+    val userId: Long,           // 管理员 QQ 号
+    val subType: GroupAdminSubType // 子类型（set/unset）
+)
+```
+
+### GroupMsgEmojiLikeEvent
+
+群消息表情回应。
+
+```kotlin
+data class GroupMsgEmojiLikeEvent(
+    val time: Long,             // 时间戳
+    val selfId: Long,           // 机器人 QQ 号
+    val postType: PostType,     // 事件类型
+    val noticeType: String,     // 通知类型
+    val groupId: Long,          // 群号
+    val userId: Long,           // 点赞者 QQ 号
+    val messageId: Long,        // 消息 ID
+    val likes: List<EmojiLike>  // 表情列表
+)
+```
+
+### EssenceEvent
+
+精华消息事件。
+
+```kotlin
+data class EssenceEvent(
+    val time: Long,             // 时间戳
+    val selfId: Long,           // 机器人 QQ 号
+    val postType: PostType,     // 事件类型
+    val noticeType: String,     // 通知类型
+    val subType: String,        // 子类型（add/delete）
+    val groupId: Long,          // 群号
+    val operatorId: Long,       // 操作者 QQ 号
+    val senderId: Long,         // 消息发送者 QQ 号
+    val messageId: Long         // 消息 ID
+)
+```
+
+### HonorEvent
+
+群荣誉变更事件。
+
+```kotlin
+data class HonorEvent(
+    val time: Long,             // 时间戳
+    val selfId: Long,           // 机器人 QQ 号
+    val postType: PostType,     // 事件类型
+    val noticeType: String,     // 通知类型
+    val subType: String,        // 子类型（honor）
+    val groupId: Long,          // 群号
+    val userId: Long,           // 获得荣誉的 QQ 号
+    val honorType: String       // 荣誉类型
+)
+```
+
+## 请求事件
+
+### FriendRequest
+
+加好友请求。
+
+```kotlin
+data class FriendRequest(
+    val time: Long,             // 时间戳
+    val selfId: Long,           // 机器人 QQ 号
+    val postType: PostType,     // 事件类型
+    val requestType: RequestType, // 请求类型
+    val flag: String,           // 请求标识
+    val userId: Long,           // 请求者 QQ 号
+    val comment: String         // 验证信息
+)
+```
+
+### GroupRequest
+
+加群请求/邀请。
+
+```kotlin
+data class GroupRequest(
+    val time: Long,             // 时间戳
+    val selfId: Long,           // 机器人 QQ 号
+    val postType: PostType,     // 事件类型
+    val requestType: RequestType, // 请求类型
+    val flag: String,           // 请求标识
+    val userId: Long,           // 请求者 QQ 号
+    val comment: String,        // 验证信息
+    val subType: GroupRequestSubType, // 子类型（add/invite）
+    val groupId: Long           // 群号
+)
+```
+
+## 元事件
+
+### OB11HeartbeatEvent
+
+心跳事件。
+
+```kotlin
+data class OB11HeartbeatEvent(
+    val time: Long,             // 时间戳
+    val selfId: Long,           // 机器人 QQ 号
+    val postType: PostType,     // 事件类型
+    val metaEventType: MetaEventType, // 元事件类型
+    val status: Status,         // 状态信息
+    val interval: Long          // 心跳间隔（毫秒）
+)
+```
+
+### OB11LifeCycleEvent
+
+生命周期事件。
+
+```kotlin
+data class OB11LifeCycleEvent(
+    val time: Long,             // 时间戳
+    val selfId: Long,           // 机器人 QQ 号
+    val postType: PostType,     // 事件类型
+    val metaEventType: MetaEventType, // 元事件类型
+    val subType: String         // 子类型（enable/disable/connect）
+)
+```
+
+## 枚举类型
+
+### PostType
+
+```kotlin
+enum class PostType {
+    MESSAGE,        // 消息事件
+    NOTICE,         // 通知事件
+    REQUEST,        // 请求事件
+    META,           // 元事件
+    MESSAGE_SENT    // 消息发送事件
+}
+```
+
+### MessageType
+
+```kotlin
+enum class MessageType {
+    PRIVATE,        // 私聊消息
+    GROUP           // 群消息
+}
+```
+
+### RequestType
+
+```kotlin
+enum class RequestType {
+    FRIEND,         // 好友请求
+    GROUP           // 群请求
+}
+```
+
+### GroupIncreaseSubType
+
+```kotlin
+enum class GroupIncreaseSubType {
+    APPROVE,        // 管理员同意入群
+    INVITE          // 管理员邀请入群
+}
+```
+
+### GroupDecreaseSubType
+
+```kotlin
+enum class GroupDecreaseSubType {
+    LEAVE,          // 主动退群
+    KICK,           // 成员被踢
+    KICK_ME         // 登录号被踢
+}
+```
+
+### GroupBanSubType
+
+```kotlin
+enum class GroupBanSubType {
+    BAN,            // 禁言
+    LIFT_BAN        // 解除禁言
+}
+```
+
+### GroupRequestSubType
+
+```kotlin
+enum class GroupRequestSubType {
+    ADD,            // 用户申请加群
+    INVITE          // 用户被邀请入群
+}
+```
+
+## 使用示例
+
+```kotlin
+class EventHandlerPlugin : PluginPackage() {
+    override suspend fun onBotContextReady() {
+        // 处理群消息
+        pluginContext.onGroupMessage { event ->
+            logger.info("收到群消息: ${event.rawMessage}")
+            logger.info("来自群: ${event.groupId}")
+            logger.info("发送者: ${event.sender.nickname}")
+        }
+        
+        // 处理通知事件
+        pluginContext.onNotice { event ->
+            when (event) {
+                is GroupIncreaseNotice -> {
+                    logger.info("新成员 ${event.userId} 加入群 ${event.groupId}")
+                }
+                is GroupDecreaseNotice -> {
+                    logger.info("成员 ${event.userId} 离开群 ${event.groupId}")
+                }
+                is GroupRecallNotice -> {
+                    logger.info("消息 ${event.messageId} 被撤回")
+                }
+                is GroupPokeEvent -> {
+                    logger.info("${event.userId} 戳了 ${event.targetId}")
+                }
+            }
+        }
+        
+        // 处理请求事件
+        pluginContext.onRequest { event ->
+            when (event) {
+                is FriendRequest -> {
+                    logger.info("收到好友请求: ${event.userId}")
+                    logger.info("验证信息: ${event.comment}")
+                }
+                is GroupRequest -> {
+                    logger.info("收到加群请求: ${event.userId} -> 群 ${event.groupId}")
+                    logger.info("类型: ${event.subType}")
+                }
+            }
+        }
+    }
+}
+```
+
+## 注意事项
+
+<Warning>
+  - 所有事件对象均为不可变的 `data class`
+  - 时间戳 `time` 字段单位为秒
+  - 消息 ID 可用于撤回、回复等操作
+  - 处理请求时必须使用原始 `flag` 标识
+</Warning>
+
+<Note>
+  - 使用 `when` 表达式处理不同事件类型时，建议添加类型判断
+  - 事件对象包含完整的上下文信息，可直接使用
+  - NapCatQQ 保证事件的实时性和准确性
+</Note>

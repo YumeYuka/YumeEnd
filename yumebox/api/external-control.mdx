@@ -1,0 +1,257 @@
+---
+title: "外部控制 API"
+sidebarTitle: "外部控制 API"
+description: "使用 Android Intent 和 URL Scheme 控制 YumeBox"
+icon: "plug"
+---
+
+# 外部控制 API
+
+YumeBox 提供了多种外部控制接口，使其他应用能够与 YumeBox 交互，包括启动/停止代理服务、导入配置等功能。
+
+## Android Intent 控制
+
+### 启动代理服务
+
+通过发送 Intent 到 YumeBox 主活动来启动代理服务：
+
+- **目标活动**：`com.github.yumelira.yumebox.MainActivity`
+- **动作**：`com.github.yumelira.yumebox.action.START_CLASH`
+
+```kotlin
+// 示例：在 Kotlin 中启动 YumeBox 代理服务
+val intent = Intent().apply {
+    component = ComponentName(
+        "com.github.yumelira.yumebox",
+        "com.github.yumelira.yumebox.MainActivity"
+    )
+    action = "com.github.yumelira.yumebox.action.START_CLASH"
+}
+startActivity(intent)
+```
+
+### 停止代理服务
+
+通过发送 Intent 来停止代理服务：
+
+- **目标活动**：`com.github.yumelira.yumebox.MainActivity`
+- **动作**：`com.github.yumelira.yumebox.action.STOP_CLASH`
+
+```kotlin
+// 示例：在 Kotlin 中停止 YumeBox 代理服务
+val intent = Intent().apply {
+    component = ComponentName(
+        "com.github.yumelira.yumebox",
+        "com.github.yumelira.yumebox.MainActivity"
+    )
+    action = "com.github.yumelira.yumebox.action.STOP_CLASH"
+}
+startActivity(intent)
+```
+
+## URL Scheme 导入
+
+YumeBox 支持通过 URL Scheme 直接导入配置文件，无需手动操作。
+
+### 导入配置文件
+
+使用以下 URL Scheme 格式导入配置：
+
+```
+clash://install-config?url=<encoded URI>
+或
+clashmeta://install-config?url=<encoded URI>
+```
+
+- `<encoded URI>` 必须是 URL 编码的配置文件链接
+- 支持 HTTP/HTTPS 协议
+- 支持 YAML/JSON 配置文件格式
+
+#### 使用示例
+
+```html
+<!-- 网页中的导入链接 -->
+<a href="clash://install-config?url=https%3A%2F%2Fexample.com%2Fconfig.yaml">
+  导入配置到 YumeBox
+</a>
+```
+
+```javascript
+// JavaScript 中打开 URL Scheme
+window.location.href = 'clash://install-config?url=' + encodeURIComponent('https://example.com/config.yaml');
+```
+
+```kotlin
+// Kotlin Android 中打开 URL Scheme
+val encodedUrl = URLEncoder.encode("https://example.com/config.yaml", "UTF-8")
+val intent = Intent(Intent.ACTION_VIEW, Uri.parse("clash://install-config?url=$encodedUrl"))
+startActivity(intent)
+```
+
+## 实际应用场景
+
+### 快捷方式启动器
+
+创建一个简单的快捷方式来控制 YumeBox：
+
+```xml
+<!-- 快捷方式配置 res/xml/shortcuts.xml -->
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <shortcut
+        android:shortcutId="start_proxy"
+        android:enabled="true"
+        android:icon="@drawable/ic_start"
+        android:shortcutShortLabel="@string/start_proxy">
+        <intent
+            android:action="com.github.yumelira.yumebox.action.START_CLASH"
+            android:targetPackage="com.github.yumelira.yumebox"
+            android:targetClass="com.github.yumelira.yumebox.MainActivity" />
+    </shortcut>
+    <shortcut
+        android:shortcutId="stop_proxy"
+        android:enabled="true"
+        android:icon="@drawable/ic_stop"
+        android:shortcutShortLabel="@string/stop_proxy">
+        <intent
+            android:action="com.github.yumelira.yumebox.action.STOP_CLASH"
+            android:targetPackage="com.github.yumelira.yumebox"
+            android:targetClass="com.github.yumelira.yumebox.MainActivity" />
+    </shortcut>
+</shortcuts>
+```
+
+### Tasker 自动化
+
+使用 Tasker 等自动化应用结合 YumeBox：
+
+1. 创建"发送 Intent"操作
+2. 设置动作为 `com.github.yumelira.yumebox.action.START_CLASH`
+3. 设置目标类为 `com.github.yumelira.yumebox.MainActivity`
+4. 设置目标包为 `com.github.yumelira.yumebox`
+
+### 第三方应用集成
+
+在你的应用中集成 YumeBox 控制：
+
+```kotlin
+class YumeBoxController(private val context: Context) {
+    
+    fun startProxy() {
+        try {
+            val intent = Intent().apply {
+                component = ComponentName(
+                    "com.github.yumelira.yumebox",
+                    "com.github.yumelira.yumebox.MainActivity"
+                )
+                action = "com.github.yumelira.yumebox.action.START_CLASH"
+            }
+            context.startActivity(intent)
+            return true
+        } catch (e: Exception) {
+            Log.e("YumeBoxController", "Failed to start YumeBox", e)
+            return false
+        }
+    }
+    
+    fun stopProxy(): Boolean {
+        return try {
+            val intent = Intent().apply {
+                component = ComponentName(
+                    "com.github.yumelira.yumebox",
+                    "com.github.yumelira.yumebox.MainActivity"
+                )
+                action = "com.github.yumelira.yumebox.action.STOP_CLASH"
+            }
+            context.startActivity(intent)
+            true
+        } catch (e: Exception) {
+            Log.e("YumeBoxController", "Failed to stop YumeBox", e)
+            false
+        }
+    }
+    
+    fun importConfig(url: String): Boolean {
+        return try {
+            val encodedUrl = URLEncoder.encode(url, "UTF-8")
+            val intent = Intent(Intent.ACTION_VIEW, 
+                Uri.parse("clash://install-config?url=$encodedUrl"))
+            context.startActivity(intent)
+            true
+        } catch (e: Exception) {
+            Log.e("YumeBoxController", "Failed to import config", e)
+            false
+        }
+    }
+}
+```
+
+## 最佳实践
+
+### 错误处理
+
+在实际应用中，务必添加适当的错误处理：
+
+```kotlin
+fun safeStartProxy(context: Context) {
+    try {
+        val intent = Intent().apply {
+            component = ComponentName(
+                "com.github.yumelira.yumebox",
+                "com.github.yumelira.yumebox.MainActivity"
+            )
+            action = "com.github.yumelira.yumebox.action.START_CLASH"
+        }
+        context.startActivity(intent)
+    } catch (e: ActivityNotFoundException) {
+        Toast.makeText(context, "未找到 YumeBox 应用", Toast.LENGTH_SHORT).show()
+    } catch (e: Exception) {
+        Toast.makeText(context, "启动失败: ${e.message}", Toast.LENGTH_SHORT).show()
+    }
+}
+```
+
+### 检查应用安装
+
+在调用 YumeBox API 前，先检查应用是否已安装：
+
+```kotlin
+fun isYumeBoxInstalled(context: Context): Boolean {
+    return try {
+        context.packageManager.getPackageInfo("com.github.yumelira.yumebox", 0)
+        true
+    } catch (e: PackageManager.NameNotFoundException) {
+        false
+    }
+}
+```
+
+## 注意事项
+
+<Warning>
+1. **包名变更**：如果修改了 YumeBox 的包名，上述 Intent 动作和目标类需要相应调整
+2. **权限要求**：调用 Intent 可能需要特定权限，确保应用有足够权限
+3. **版本兼容**：不同 YumeBox 版本可能支持的功能有所不同
+4. **URL 编码**：确保配置文件 URL 已正确编码
+</Warning>
+
+## 故障排除
+
+### Intent 不生效
+
+1. 检查 YumeBox 是否已安装
+2. 确认包名和类名是否正确
+3. 检查应用是否有关联权限
+4. 查看 Logcat 中的错误信息
+
+### URL Scheme 不工作
+
+1. 确认 URL 已正确编码
+2. 检查配置文件 URL 是否可访问
+3. 验证协议是否为 `clash` 或 `clashmeta`
+4. 尝试在浏览器中直接打开 URL Scheme
+
+## 参考资源
+
+- [Android Intent 文档](https://developer.android.com/guide/components/intents-filters)
+- [Kotlin Intent 示例](https://kotlinlang.org/docs/android-intent.html)
+- [URL Scheme 规范](https://developer.apple.com/documentation/xcode/defining-a-custom-url-scheme-for-your-app)

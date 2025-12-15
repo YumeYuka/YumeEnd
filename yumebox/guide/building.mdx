@@ -1,0 +1,109 @@
+---
+title: "构建"
+sidebarTitle: "构建"
+description: 从源码构建 YumeBox
+icon: "wrench"
+---
+
+## 前提条件
+
+在开始之前，请确保你的开发环境满足以下要求：
+
+- **OpenJDK 24** 或更高版本
+- **Android SDK** (API 级别 24 及以上)
+- **CMake** (用于原生代码编译)
+- **Golang** (用于构建 mihomo 内核)
+- **Git** (用于克隆和同步代码)
+
+## 克隆仓库
+
+```bash icon="terminal"
+# 克隆 YumeBox 仓库
+git clone https://github.com/YumeLira/YumeBox.git
+cd YumeBox
+```
+
+## 同步内核源码
+
+YumeBox 支持多个内核版本，根据你的需求选择合适的内核类型：
+
+```bash icon="code"
+# 同步 mihomo 内核 (稳定版本)
+sh scripts/sync-kernel.sh meta
+
+# 同步 mihomo alpha 版本
+sh scripts/sync-kernel.sh alpha
+
+# 同步 Smart 系列内核
+sh scripts/sync-kernel.sh smart
+```
+
+## 配置开发环境
+
+### 1. 配置 Android SDK 路径
+
+在项目根目录创建 `local.properties` 文件：
+
+```properties icon="code"
+sdk.dir=/path/to/your/android-sdk
+```
+
+### 2. 自定义包名（可选）
+
+编辑 `gradle.properties` 文件自定义包名：
+
+```properties gradle.properties ico="code"
+project.namespace.base=com.github.yumelira.yumebox
+project.namespace.core=${project.namespace.base}.core
+project.namespace.extension=${project.namespace.base}.extension
+project.namespace.buildlogic=${project.namespace.base}.buildlogic
+```
+
+### 3. 配置签名密钥（用于发布版本）
+
+在项目根目录创建 `signing.properties` 文件：
+
+```properties signing.properties ico="code"
+keystore.path=/path/to/your/keystore/file
+keystore.password=your_keystore_password
+key.alias=your_key_alias
+key.password=your_key_password
+```
+
+## 构建应用
+
+### 构建 Debug 版本
+
+```bash icon="terminal"
+# 构建主应用
+./gradlew app:assembleDebug
+
+# 构建 SubStore 扩展
+./gradlew extension:assembleDebug
+```
+
+### 构建 Release 版本
+
+```bash icon="terminal"
+# 构建主应用
+./gradlew app:assembleRelease
+
+# 构建 SubStore 扩展
+./gradlew extension:assembleRelease
+```
+
+构建完成后，APK 文件将位于以下目录：
+- 主应用：`app/build/outputs/apk/`
+- 扩展：`extension/build/outputs/apk/`
+
+## 多架构构建
+
+默认情况下，Gradle 会构建支持所有架构的应用。你可以通过参数指定特定架构：
+
+```bash icon="terminal"
+# 仅构建 ARM64 架构
+./gradlew app:assembleRelease -Pandroid.buildTargetArch=arm64-v8a
+
+# 构建多个架构
+./gradlew app:assembleRelease -Pandroid.buildTargetArch=arm64-v8a,armeabi-v7a
+```

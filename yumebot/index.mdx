@@ -1,0 +1,115 @@
+---
+title: "首页"
+sidebarTitle: "首页"
+description: 基于 NapCatQQ 的 Kotlin QQ 机器人开发框架
+icon: "house"
+---
+
+# YumeBot
+
+基于 NapCatQQ 的 Kotlin QQ 机器人开发框架，提供简洁优雅的 API 和强大的插件系统。
+
+<CardGroup cols={2}>
+  <Card
+    title="快速开始"
+    icon="rocket"
+    href="/guide/quick-start"
+  >
+    5 分钟快速上手，编写你的第一个机器人插件
+  </Card>
+  <Card
+    title="API 参考"
+    icon="code"
+    href="/api/listeners"
+  >
+    完整的 API 文档，涵盖所有功能模块
+  </Card>
+  <Card
+    title="协议文档"
+    icon="book"
+    href="/protocol/events"
+  >
+    NapCatQQ 协议事件、消息段、过滤器详解
+  </Card>
+  <Card
+    title="示例代码"
+    icon="file-code"
+    href="/examples/basic-examples"
+  >
+    实用的代码示例，快速理解各种使用场景
+  </Card>
+</CardGroup>
+
+
+## 快速示例
+
+```kotlin
+package plugins.hello
+
+import plus.yumeyuka.yumebot.plugin.Plugin
+import plus.yumeyuka.yumebot.plugin.annotations.OnGroupMessage
+import plus.yumeyuka.yumebot.plugin.annotations.GroupKeyword
+import plus.yumeyuka.yumebot.plugin.annotations.Priority
+import plus.yumeyuka.yumebot.protocol.message.OB11GroupMessage
+import plus.yumeyuka.yumebot.api.message.message
+
+class HelloPlugin : Plugin() {
+    override val id = "com.example.hello"
+    override val name = "问候插件"
+    override val version = "1.0.0"
+    override val author = "YumeBot"
+    override val description = "简单的问候插件示例"
+
+    override suspend fun onEnable() {
+        logger.info("问候插件已启动")
+    }
+
+    @OnGroupMessage
+    @GroupKeyword("你好", "hello")
+    @Priority(100)
+    suspend fun onHello(event: OB11GroupMessage) {
+        val reply = message {
+            at(event.sender.userId)
+            text(" 你好！很高兴见到你")
+        }.build()
+        
+        messageApi?.sendGroupMessage(event.groupId, reply, name)
+    }
+}
+```
+
+## 技术栈
+
+<CardGroup cols={2}>
+  <Card title="Kotlin 2.0+" icon="code">
+    现代化 JVM 语言，简洁高效
+  </Card>
+  <Card title="Kotlin Coroutines" icon="arrows-spin">
+    协程支持，异步编程
+  </Card>
+  <Card title="NapCatQQ" icon="robot">
+    基于 QQNT 的现代化 QQ 机器人框架
+  </Card>
+  <Card title="Gradle KTS" icon="cube">
+    Kotlin DSL 构建脚本
+  </Card>
+</CardGroup>
+
+## 相关链接
+
+<CardGroup cols={2}>
+  <Card
+    title="GitHub 仓库"
+    icon="github"
+    href="https://github.com/YumeYuka/YumeBot"
+  >
+    查看源代码、提交 Issue、参与贡献
+  </Card>
+  <Card
+    title="问题反馈"
+    icon="bug"
+    href="https://github.com/YumeYuka/YumeBot/issues"
+  >
+    遇到问题？提交 Issue 获取帮助
+  </Card>
+</CardGroup>

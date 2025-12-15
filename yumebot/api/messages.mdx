@@ -1,0 +1,606 @@
+---
+title: "消息 API"
+sidebarTitle: "消息"
+description: "消息发送、撤回、查询"
+icon: "message"
+---
+
+<Note>
+  消息 API 支持发送文本、图片、语音、视频等多种消息类型，并提供消息撤回、查询等功能。
+</Note>
+
+## 概述
+
+在插件中通过 `messageApi` 属性访问：
+
+```kotlin
+class MyPlugin : PluginPackage() {
+    override suspend fun onBotContextReady() {
+        messageApi?.sendGroupMessage(groupId, message)
+    }
+}
+```
+
+---
+
+## 发送群消息
+
+### sendGroupMessage
+
+发送群消息，不等待响应。
+
+```kotlin
+suspend fun sendGroupMessage(
+    groupId: Long,
+    message: List<MessageSegment>,
+    caller: String? = null
+): Boolean
+```
+
+<ParamField path="groupId" type="Long" required>
+  群号
+</ParamField>
+
+<ParamField path="message" type="List<MessageSegment>" required>
+  消息段列表
+</ParamField>
+
+<ParamField path="caller" type="String">
+  调用者名称，用于日志标识
+</ParamField>
+
+**返回值**
+- `Boolean` - 是否发送成功
+
+**示例**
+
+```kotlin
+val msg = message {
+    text("Hello, World!")
+    image("https://example.com/image.jpg")
+}.build()
+
+messageApi?.sendGroupMessage(123456789L, msg)
+```
+
+### sendGroupMessageAwait
+
+发送群消息，等待响应并返回消息 ID。
+
+```kotlin
+suspend fun sendGroupMessageAwait(
+    groupId: Long,
+    message: List<MessageSegment>,
+    caller: String? = null
+): SendMessageResponse?
+```
+
+**返回值**
+
+```kotlin
+data class SendMessageResponse(
+    val status: String,
+    val retcode: Int,
+    val data: SendMessageData
+)
+
+data class SendMessageData(
+    val messageId: Long  // 消息 ID
+)
+```
+
+**示例**
+
+```kotlin
+val msg = message { text("测试") }.build()
+val response = messageApi?.sendGroupMessageAwait(123456789L, msg)
+
+if (response != null) {
+    logger.info("消息已发送，ID: ${response.data.messageId}")
+}
+```
+
+---
+
+## 发送私聊消息
+
+### sendPrivateMessage
+
+发送私聊消息，不等待响应。
+
+```kotlin
+suspend fun sendPrivateMessage(
+    userId: Long,
+    message: List<MessageSegment>,
+    caller: String? = null
+): Boolean
+```
+
+<ParamField path="userId" type="Long" required>
+  用户 QQ 号
+</ParamField>
+
+<ParamField path="message" type="List<MessageSegment>" required>
+  消息段列表
+</ParamField>
+
+<ParamField path="caller" type="String">
+  调用者名称，用于日志
+</ParamField>
+
+**示例**
+
+```kotlin
+val msg = message {
+    text("你好！")
+}.build()
+
+messageApi?.sendPrivateMessage(987654321L, msg)
+```
+
+### sendPrivateMessageAwait
+
+发送私聊消息，等待响应。
+
+```kotlin
+suspend fun sendPrivateMessageAwait(
+    userId: Long,
+    message: List<MessageSegment>,
+    caller: String? = null
+): SendMessageResponse?
+```
+
+**示例**
+
+```kotlin
+val msg = message { text("测试") }.build()
+val response = messageApi?.sendPrivateMessageAwait(987654321L, msg)
+
+if (response != null) {
+    logger.info("消息 ID: ${response.data.messageId}")
+}
+```
+
+---
+
+## 通用发送接口
+
+### sendMsg
+
+发送消息（通用接口），不等待响应。
+
+```kotlin
+suspend fun sendMsg(
+    messageType: String,
+    message: List<MessageSegment>,
+    userId: Long? = null,
+    groupId: Long? = null,
+    autoEscape: Boolean = false,
+    caller: String? = null
+): Boolean
+```
+
+<ParamField path="messageType" type="String" required>
+  消息类型：`private` 或 `group`
+</ParamField>
+
+<ParamField path="message" type="List<MessageSegment>" required>
+  消息段列表
+</ParamField>
+
+<ParamField path="userId" type="Long">
+  用户 QQ 号（私聊时必填）
+</ParamField>
+
+<ParamField path="groupId" type="Long">
+  群号（群聊时必填）
+</ParamField>
+
+<ParamField path="autoEscape" type="Boolean">
+  是否作为纯文本发送，默认 false
+</ParamField>
+
+**示例**
+
+```kotlin
+// 发送群消息
+messageApi?.sendMsg(
+    messageType = "group",
+    groupId = 123456789L,
+    message = message { text("测试") }.build()
+)
+
+// 发送私聊消息
+messageApi?.sendMsg(
+    messageType = "private",
+    userId = 987654321L,
+    message = message { text("测试") }.build()
+)
+```
+
+### sendMsgAwait
+
+发送消息（通用接口），等待响应。
+
+```kotlin
+suspend fun sendMsgAwait(
+    messageType: String,
+    message: List<MessageSegment>,
+    userId: Long? = null,
+    groupId: Long? = null,
+    autoEscape: Boolean = false,
+    caller: String? = null
+): SendMessageResponse?
+```
+
+---
+
+## 合并转发消息
+
+### sendGroupForwardMsg
+
+发送群组合并转发消息，不等待响应。
+
+```kotlin
+suspend fun sendGroupForwardMsg(
+    groupId: Long,
+    messages: List<ForwardNode>
+): Boolean
+```
+
+<ParamField path="groupId" type="Long" required>
+  群号
+</ParamField>
+
+<ParamField path="messages" type="List<ForwardNode>" required>
+  合并转发节点列表
+</ParamField>
+
+**ForwardNode 结构**
+
+```kotlin
+data class ForwardNode(
+    val type: String = "node",
+    val data: ForwardNodeData
+)
+
+data class ForwardNodeData(
+    val name: String,                    // 发送者显示名称
+    val uin: String,                     // 发送者 QQ 号
+    val content: List<MessageSegment>    // 消息内容
+)
+```
+
+**示例**
+
+```kotlin
+val nodes = listOf(
+    ForwardNode(
+        data = ForwardNodeData(
+            name = "用户A",
+            uin = "123456",
+            content = message { text("第一条消息") }.build()
+        )
+    ),
+    ForwardNode(
+        data = ForwardNodeData(
+            name = "用户B",
+            uin = "789012",
+            content = message { text("第二条消息") }.build()
+        )
+    )
+)
+
+messageApi?.sendGroupForwardMsg(123456789L, nodes)
+```
+
+### sendGroupForwardMsgAwait
+
+发送群组合并转发消息，等待响应。
+
+```kotlin
+suspend fun sendGroupForwardMsgAwait(
+    groupId: Long,
+    messages: List<ForwardNode>
+): SendMessageResponse?
+```
+
+### sendPrivateForwardMsg
+
+发送私聊合并转发消息，不等待响应。
+
+```kotlin
+suspend fun sendPrivateForwardMsg(
+    userId: Long,
+    messages: List<ForwardNode>
+): Boolean
+```
+
+### sendPrivateForwardMsgAwait
+
+发送私聊合并转发消息，等待响应。
+
+```kotlin
+suspend fun sendPrivateForwardMsgAwait(
+    userId: Long,
+    messages: List<ForwardNode>
+): SendMessageResponse?
+```
+
+---
+
+## 消息管理
+
+### deleteMessage
+
+撤回消息。
+
+```kotlin
+suspend fun deleteMessage(messageId: Long): Boolean
+```
+
+<ParamField path="messageId" type="Long" required>
+  消息 ID
+</ParamField>
+
+**示例**
+
+```kotlin
+val response = messageApi?.sendGroupMessageAwait(groupId, message)
+if (response != null) {
+    // 3秒后撤回
+    delay(3000)
+    messageApi?.deleteMessage(response.data.messageId)
+}
+```
+
+### getMessage
+
+获取消息详情。
+
+```kotlin
+suspend fun getMessage(messageId: Long): GetMessageResponse?
+```
+
+<ParamField path="messageId" type="Long" required>
+  消息 ID
+</ParamField>
+
+**返回值**
+
+```kotlin
+data class GetMessageResponse(
+    val status: String,
+    val retcode: Int,
+    val data: MessageData
+)
+
+data class MessageData(
+    val messageId: Long,
+    val realId: Long,
+    val sender: Sender,
+    val time: Long,
+    val message: List<OB11Segment>
+)
+```
+
+**示例**
+
+```kotlin
+val msgInfo = messageApi?.getMessage(messageId)
+if (msgInfo != null) {
+    logger.info("消息时间: ${msgInfo.data.time}")
+    logger.info("发送者: ${msgInfo.data.sender.userId}")
+}
+```
+
+### getForwardMessage
+
+获取合并转发消息详情。
+
+```kotlin
+suspend fun getForwardMessage(messageId: Long): GetMessageResponse?
+```
+
+<ParamField path="messageId" type="Long" required>
+  合并转发消息 ID
+</ParamField>
+
+**示例**
+
+```kotlin
+val forwardMsg = messageApi?.getForwardMessage(messageId)
+```
+
+### markMsgAsRead
+
+标记消息已读。
+
+```kotlin
+suspend fun markMsgAsRead(messageId: Long): Boolean
+```
+
+<ParamField path="messageId" type="Long" required>
+  消息 ID
+</ParamField>
+
+**示例**
+
+```kotlin
+messageApi?.markMsgAsRead(event.messageId)
+```
+
+---
+
+## 消息构造 DSL
+
+使用 `message` DSL 构造消息：
+
+```kotlin
+val msg = message {
+    text("纯文本")
+    at(123456L)
+    image("https://example.com/pic.jpg")
+    face(123)
+    reply(messageId)
+}.build()
+```
+
+### 可用方法
+
+**文本和提及**
+
+```kotlin
+text(content: String)        // 添加文本
+at(qq: Long)                 // @指定用户
+atAll()                      // @全体成员
+```
+
+**媒体内容**
+
+```kotlin
+image(file: String)          // 添加图片（URL、文件路径、base64）
+face(id: Int)                // 添加 QQ 表情
+record(file: String)         // 添加语音
+video(file: String)          // 添加视频
+```
+
+**特殊消息**
+
+```kotlin
+reply(messageId: Long)       // 回复消息
+json(data: String)           // JSON 卡片
+xml(data: String)            // XML 卡片
+poke(type: Int, id: Int)     // 戳一戳
+```
+
+**分享**
+
+```kotlin
+music(type: String, id: String)           // 音乐分享
+location(lat: Float, lon: Float, title: String)  // 位置分享
+share(url: String, title: String)         // 链接分享
+contact(type: String, id: Long)           // 联系人分享
+```
+
+---
+
+## 完整示例
+
+### 基础消息发送
+
+```kotlin
+class MessagePlugin : PluginPackage() {
+    override suspend fun onBotContextReady() {
+        pluginContext.onGroupMessage(
+            filter = Filters.groupStartsWith("/echo ")
+        ) { event ->
+            val content = event.rawMessage.removePrefix("/echo ")
+            
+            val reply = message {
+                reply(event.messageId)
+                text("你说：$content")
+            }.build()
+            
+            messageApi?.sendGroupMessage(event.groupId, reply)
+        }
+    }
+}
+```
+
+### 发送后撤回
+
+```kotlin
+val response = messageApi?.sendGroupMessageAwait(
+    event.groupId, 
+    message { text("这条消息将在5秒后撤回") }.build()
+)
+
+if (response != null) {
+    delay(5000)
+    messageApi?.deleteMessage(response.data.messageId)
+}
+```
+
+### 图文消息
+
+```kotlin
+val msg = message {
+    text("【每日推荐】\n")
+    text("标题：Kotlin 协程入门\n")
+    text("简介：学习 Kotlin 协程的基础知识\n")
+    image("https://example.com/cover.jpg")
+    text("\n")
+    share(
+        url = "https://example.com/article",
+        title = "点击阅读"
+    )
+}.build()
+
+messageApi?.sendGroupMessage(groupId, msg)
+```
+
+### 合并转发
+
+```kotlin
+val nodes = listOf(
+    ForwardNode(
+        data = ForwardNodeData(
+            name = "系统通知",
+            uin = event.selfId.toString(),
+            content = message {
+                text("【重要通知】\n群规更新，请查看")
+            }.build()
+        )
+    ),
+    ForwardNode(
+        data = ForwardNodeData(
+            name = "管理员",
+            uin = "123456",
+            content = message {
+                text("1. 禁止广告\n2. 禁止刷屏")
+            }.build()
+        )
+    )
+)
+
+messageApi?.sendGroupForwardMsg(event.groupId, nodes)
+```
+
+### 多媒体消息
+
+```kotlin
+val multimedia = message {
+    text("这是一条多媒体消息：\n")
+    image("https://example.com/pic1.jpg")
+    text("\n")
+    image("https://example.com/pic2.jpg")
+    text("\n")
+    record("https://example.com/voice.amr")
+    text("\n语音消息已发送")
+}.build()
+
+messageApi?.sendGroupMessage(groupId, multimedia)
+```
+
+---
+
+## 注意事项
+
+<Warning>
+  - Await 方法需要 RequestManager 支持，会等待响应（超时 10 秒）
+  - 发送失败返回 false 或 null，务必检查返回值
+  - 图片支持 URL、文件路径、base64 三种格式
+  - 消息发送速度受 NapCatQQ 和腾讯服务器限制
+  - 单条消息长度限制通常为 5000 字符
+  - 图片数量限制通常为 10 张/条
+</Warning>
+
+<Note>
+  - 保存 `messageId` 可用于撤回、回复等操作
+  - 合并转发有长度和条数限制，过多消息可能失败
+  - 使用 `?.` 安全调用避免空指针异常
+  - NapCatQQ 会自动处理消息队列和发送频率
+  - 建议发送重要消息时使用 Await 方法确认成功
+  - `caller` 参数仅用于日志标识，不影响功能
+</Note>

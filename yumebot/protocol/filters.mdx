@@ -1,0 +1,500 @@
+---
+title: "过滤器"
+sidebarTitle: "过滤器"
+description: "NapCatQQ 事件过滤器函数"
+icon: "filter"
+---
+
+<Note>
+  YumeBot 过滤器系统帮助您精确匹配需要处理的 NapCatQQ 事件，提高插件性能和代码可读性。
+</Note>
+
+
+
+```kotlin
+import plus.yumeyuka.yumebot.protocol.monitor.Filters
+```
+
+
+## 通用过滤器
+
+### keyword
+
+关键词过滤器，检查文本是否包含指定关键词（不区分大小写）。
+
+```kotlin
+fun <T> keyword(
+    vararg keywords: String, 
+    extractor: (T) -> String
+): (T) -> Boolean
+```
+
+**参数**
+
+- `keywords` - 关键词列表
+- `extractor` - 从事件对象提取文本的函数
+
+**示例**
+
+```kotlin
+// 泛型用法
+val filter = Filters.keyword("原神", "启动") { event -> event.rawMessage }
+
+// 匹配任一关键词即返回 true
+```
+
+### startsWith
+
+前缀过滤器，检查文本是否以指定前缀开头。
+
+```kotlin
+fun <T> startsWith(
+    prefix: String, 
+    extractor: (T) -> String
+): (T) -> Boolean
+```
+
+**参数**
+
+- `prefix` - 前缀字符串
+- `extractor` - 从事件对象提取文本的函数
+
+**示例**
+
+```kotlin
+val filter = Filters.startsWith("/cmd") { event -> event.rawMessage }
+```
+
+### regex
+
+正则表达式过滤器。
+
+```kotlin
+fun <T> regex(
+    pattern: Regex, 
+    extractor: (T) -> String
+): (T) -> Boolean
+```
+
+**参数**
+
+- `pattern` - 正则表达式
+- `extractor` - 从事件对象提取文本的函数
+
+**示例**
+
+```kotlin
+// 匹配 6 位数字
+val filter = Filters.regex(Regex("\\d{6}")) { event -> event.rawMessage }
+
+// 匹配 QQ 号
+val qqFilter = Filters.regex(Regex("\\d{5,11}")) { it.rawMessage }
+```
+
+### exact
+
+精确匹配过滤器。
+
+```kotlin
+fun <T> exact(
+    target: String,
+    ignoreCase: Boolean = true,
+    extractor: (T) -> String
+): (T) -> Boolean
+```
+
+**参数**
+
+- `target` - 目标字符串
+- `ignoreCase` - 是否忽略大小写（默认 true）
+- `extractor` - 从事件对象提取文本的函数
+
+**示例**
+
+```kotlin
+val filter = Filters.exact("help", ignoreCase = true) { it.rawMessage }
+```
+
+## 群消息过滤器
+
+### groupKeyword
+
+群消息关键词过滤器。
+
+```kotlin
+fun groupKeyword(vararg keywords: String): (OB11GroupMessage) -> Boolean
+```
+
+**示例**
+
+```kotlin
+filter = Filters.groupKeyword("原神", "启动")
+```
+
+### groupStartsWith
+
+群消息前缀过滤器。
+
+```kotlin
+fun groupStartsWith(prefix: String): (OB11GroupMessage) -> Boolean
+```
+
+**示例**
+
+```kotlin
+filter = Filters.groupStartsWith("/")
+filter = Filters.groupStartsWith("!")
+```
+
+### groupExact
+
+群消息精确匹配过滤器。
+
+```kotlin
+fun groupExact(
+    target: String,
+    ignoreCase: Boolean = true
+): (OB11GroupMessage) -> Boolean
+```
+
+**示例**
+
+```kotlin
+filter = Filters.groupExact("help")
+filter = Filters.groupExact("HELP", ignoreCase = false)
+```
+
+### groupRegex
+
+群消息正则过滤器。
+
+```kotlin
+fun groupRegex(pattern: Regex): (OB11GroupMessage) -> Boolean
+```
+
+**示例**
+
+```kotlin
+filter = Filters.groupRegex(Regex("签到|打卡"))
+```
+
+### fromGroup
+
+按群号过滤群消息。
+
+```kotlin
+fun fromGroup(vararg groupIds: Long): (OB11GroupMessage) -> Boolean
+```
+
+**示例**
+
+```kotlin
+// 只接收指定群的消息
+filter = Filters.fromGroup(123456789L, 987654321L)
+```
+
+### fromUserInGroup
+
+按发送者 QQ 号过滤群消息。
+
+```kotlin
+fun fromUserInGroup(vararg userIds: Long): (OB11GroupMessage) -> Boolean
+```
+
+**示例**
+
+```kotlin
+// 只接收指定用户的消息
+filter = Filters.fromUserInGroup(111111L, 222222L)
+```
+
+## 私聊消息过滤器
+
+### privateKeyword
+
+私聊消息关键词过滤器。
+
+```kotlin
+fun privateKeyword(vararg keywords: String): (OB11PrivateMessage) -> Boolean
+```
+
+**示例**
+
+```kotlin
+filter = Filters.privateKeyword("帮助", "help")
+```
+
+### privateStartsWith
+
+私聊消息前缀过滤器。
+
+```kotlin
+fun privateStartsWith(prefix: String): (OB11PrivateMessage) -> Boolean
+```
+
+**示例**
+
+```kotlin
+filter = Filters.privateStartsWith("/")
+```
+
+### privateExact
+
+私聊消息精确匹配过滤器。
+
+```kotlin
+fun privateExact(
+    target: String,
+    ignoreCase: Boolean = true
+): (OB11PrivateMessage) -> Boolean
+```
+
+**示例**
+
+```kotlin
+filter = Filters.privateExact("menu")
+```
+
+### privateRegex
+
+私聊消息正则过滤器。
+
+```kotlin
+fun privateRegex(pattern: Regex): (OB11PrivateMessage) -> Boolean
+```
+
+**示例**
+
+```kotlin
+filter = Filters.privateRegex(Regex("\\d{4}"))
+```
+
+### fromUserInPrivate
+
+按 QQ 号过滤私聊消息。
+
+```kotlin
+fun fromUserInPrivate(vararg userIds: Long): (OB11PrivateMessage) -> Boolean
+```
+
+**示例**
+
+```kotlin
+// 只接收指定用户的私聊
+filter = Filters.fromUserInPrivate(123456L, 789012L)
+```
+
+## 逻辑运算符
+
+### and
+
+逻辑与，两个过滤器都返回 true 时才返回 true。
+
+```kotlin
+infix fun <T> ((T) -> Boolean).and(other: (T) -> Boolean): (T) -> Boolean
+```
+
+**示例**
+
+```kotlin
+filter = Filters.groupKeyword("原神") and Filters.fromGroup(12345L)
+```
+
+### or
+
+逻辑或，至少一个过滤器返回 true 时就返回 true。
+
+```kotlin
+infix fun <T> ((T) -> Boolean).or(other: (T) -> Boolean): (T) -> Boolean
+```
+
+**示例**
+
+```kotlin
+filter = Filters.groupKeyword("原神") or Filters.groupKeyword("崩坏")
+```
+
+### not
+
+逻辑非，反转过滤器结果。
+
+```kotlin
+operator fun <T> ((T) -> Boolean).not(): (T) -> Boolean
+```
+
+**示例**
+
+```kotlin
+// 排除特定群
+filter = !Filters.fromGroup(12345L)
+
+// 不包含关键词
+filter = !Filters.groupKeyword("广告")
+```
+
+## 组合示例
+
+```kotlin
+// 示例 1: 指定群 + 关键词
+filter = Filters.fromGroup(123456789L) and 
+         Filters.groupKeyword("原神")
+
+// 示例 2: 多关键词或前缀命令
+filter = Filters.groupKeyword("原神") or 
+         Filters.groupStartsWith("/原神")
+
+// 示例 3: 排除特定用户
+filter = Filters.groupKeyword("签到") and !Filters.fromUserInGroup(111111L)
+
+// 示例 4: 复杂组合
+filter = (Filters.fromGroup(123456789L, 987654321L) and Filters.groupKeyword("原神")) or 
+         Filters.groupStartsWith("/ys")
+
+// 示例 5: 正则 + 群限制
+filter = Filters.groupRegex(Regex("\\d{6}")) and Filters.fromGroup(123456789L)
+```
+
+## 自定义过滤器
+
+直接使用 Lambda 表达式：
+
+```kotlin
+// 自定义过滤器
+pluginContext.onGroupMessage(
+    name = "CustomFilter",
+    filter = { event ->
+        // 消息长度大于 10
+        event.rawMessage.length > 10 &&
+        // 包含图片
+        event.message.any { it is OB11Segment.Image } &&
+        // 来自指定群
+        event.groupId == 123456789L
+    }
+) { event ->
+    // 处理逻辑
+}
+```
+
+## 完整示例
+
+```kotlin
+class FilterExamplePlugin : PluginPackage() {
+    override suspend fun onBotContextReady() {
+        // 基础关键词过滤
+        pluginContext.onGroupMessage(
+            name = "KeywordListener",
+            filter = Filters.groupKeyword("原神", "启动")
+        ) { event ->
+            // 处理消息
+        }
+        
+        // 命令前缀过滤
+        pluginContext.onGroupMessage(
+            name = "CommandListener",
+            filter = Filters.groupStartsWith("/")
+        ) { event ->
+            when {
+                event.rawMessage.startsWith("/help") -> { /* ... */ }
+                event.rawMessage.startsWith("/info") -> { /* ... */ }
+            }
+        }
+        
+        // 组合过滤器
+        pluginContext.onGroupMessage(
+            name = "AdvancedFilter",
+            filter = Filters.fromGroup(123456789L) and 
+                     (Filters.groupKeyword("原神") or Filters.groupStartsWith("/ys"))
+        ) { event ->
+            // 只在指定群，且包含"原神"或以"/ys"开头
+        }
+        
+        // 正则匹配
+        pluginContext.onGroupMessage(
+            name = "RegexListener",
+            filter = Filters.groupRegex(Regex("签到|打卡"))
+        ) { event ->
+            // 匹配"签到"或"打卡"
+        }
+        
+        // 排除过滤
+        pluginContext.onGroupMessage(
+            name = "ExcludeFilter",
+            filter = Filters.groupKeyword("测试") and 
+                     !Filters.fromGroup(999999999L)
+        ) { event ->
+            // 包含"测试"但不在特定群
+        }
+    }
+}
+```
+
+## 性能建议
+
+<AccordionGroup>
+  <Accordion title="优先使用预定义过滤器" icon="bolt">
+    预定义过滤器（如 `groupKeyword`、`groupStartsWith`）经过优化，比自定义 Lambda 更高效。
+    
+    ```kotlin
+    // 推荐
+    filter = Filters.groupKeyword("原神")
+    
+    // 不推荐
+    filter = { event -> event.rawMessage.contains("原神", ignoreCase = true) }
+    ```
+  </Accordion>
+  
+  <Accordion title="合理排列过滤器顺序" icon="list-ordered">
+    组合过滤器时，将最可能失败的条件放前面，利用短路特性提高性能。
+    
+    ```kotlin
+    // 推荐：先检查群号（快速失败）
+    filter = Filters.fromGroup(123456L) and Filters.groupRegex(complexPattern)
+    
+    // 不推荐：先执行复杂正则
+    filter = Filters.groupRegex(complexPattern) and Filters.fromGroup(123456L)
+    ```
+  </Accordion>
+  
+  <Accordion title="避免复杂正则表达式" icon="code">
+    简单匹配优先使用 `keyword` 或 `startsWith`，它们比正则表达式更快。
+    
+    ```kotlin
+    // 推荐
+    filter = Filters.groupStartsWith("/cmd")
+    
+    // 不推荐（性能较差）
+    filter = Filters.groupRegex(Regex("^/cmd.*"))
+    ```
+  </Accordion>
+  
+  <Accordion title="缓存正则对象" icon="database">
+    不要在过滤器中重复创建 `Regex` 对象，应该复用。
+    
+    ```kotlin
+    // 不推荐：每次都创建新的 Regex
+    filter = Filters.groupRegex(Regex("\\d{6}"))
+    
+    // 推荐：复用 Regex 对象
+    companion object {
+        private val PATTERN = Regex("\\d{6}")
+    }
+    filter = Filters.groupRegex(PATTERN)
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## 注意事项
+
+<Warning>
+  - **过滤器返回 false** - handler 不会被触发，事件将被跳过
+  - **关键词不区分大小写** - `groupKeyword` 默认忽略大小写
+  - **过滤器在监听器注册时确定** - 运行时无法动态修改
+  - **自定义过滤器要注意性能** - 复杂逻辑可能影响 NapCatQQ 消息处理速度
+</Warning>
+
+<Note>
+  - 逻辑运算符支持链式调用：`and`、`or`、`not` 可自由组合
+  - 过滤器越精确，插件性能越好，减少不必要的事件处理
+  - NapCatQQ 会实时推送事件，合理使用过滤器避免资源浪费
+  - 可以在开发环境使用宽松过滤器，生产环境使用严格过滤器
+</Note>

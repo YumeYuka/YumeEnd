@@ -1,0 +1,628 @@
+---
+title: "好友 API"
+sidebarTitle: "好友"
+description: "好友管理与互动"
+icon: "user-plus"
+---
+
+<Note>
+  好友 API 提供好友管理、信息查询、互动等功能，包括点赞、戳一戳、消息历史等。
+</Note>
+
+## 概述
+
+在插件中通过 `friendApi` 属性访问：
+
+```kotlin
+class MyPlugin : PluginPackage() {
+    override suspend fun onBotContextReady() {
+        friendApi?.sendLike(userId, 10)
+    }
+}
+```
+
+---
+
+## 好友互动
+
+### sendLike
+
+给好友点赞。
+
+```kotlin
+suspend fun sendLike(
+    userId: Long,
+    times: Int = 1
+): Boolean
+```
+
+<ParamField path="userId" type="Long" required>
+  好友 QQ 号
+</ParamField>
+
+<ParamField path="times" type="Int">
+  点赞次数，每个好友每天最多 10 次，默认 1
+</ParamField>
+
+**返回值**
+- `Boolean` - 是否成功
+
+**示例**
+
+```kotlin
+// 点赞 10 次
+friendApi?.sendLike(987654321L, 10)
+
+// 点赞 1 次
+friendApi?.sendLike(987654321L)
+```
+
+### friendPoke
+
+戳一戳好友（私聊戳一戳）。
+
+```kotlin
+suspend fun friendPoke(userId: Long): Boolean
+```
+
+<ParamField path="userId" type="Long" required>
+  要戳的 QQ 号
+</ParamField>
+
+**示例**
+
+```kotlin
+friendApi?.friendPoke(987654321L)
+```
+
+---
+
+## 好友管理
+
+### setFriendAddRequest
+
+处理加好友请求。
+
+```kotlin
+suspend fun setFriendAddRequest(
+    flag: String,
+    approve: Boolean = true,
+    remark: String = ""
+): Boolean
+```
+
+<ParamField path="flag" type="String" required>
+  请求标识，从 `FriendRequest` 事件中获取
+</ParamField>
+
+<ParamField path="approve" type="Boolean">
+  是否同意请求，默认 true
+</ParamField>
+
+<ParamField path="remark" type="String">
+  好友备注，仅同意时有效
+</ParamField>
+
+**示例**
+
+```kotlin
+pluginContext.onRequest(
+    filter = { it is FriendRequest }
+) { event ->
+    if (event is FriendRequest) {
+        friendApi?.setFriendAddRequest(
+            flag = event.flag,
+            approve = true,
+            remark = "机器人好友"
+        )
+    }
+}
+```
+
+### deleteFriend
+
+删除好友。
+
+```kotlin
+suspend fun deleteFriend(userId: Long): Boolean
+```
+
+<ParamField path="userId" type="Long" required>
+  要删除的 QQ 号
+</ParamField>
+
+**示例**
+
+```kotlin
+friendApi?.deleteFriend(987654321L)
+```
+
+---
+
+## 好友信息查询
+
+### getFriendList
+
+获取好友列表。
+
+```kotlin
+suspend fun getFriendList(): GetFriendListResponse?
+```
+
+**返回值**
+
+```kotlin
+data class GetFriendListResponse(
+    val status: String,
+    val retcode: Int,
+    val data: List<FriendInfo>
+)
+
+data class FriendInfo(
+    val userId: Long,
+    val nickname: String,
+    val remark: String
+)
+```
+
+**示例**
+
+```kotlin
+val friendList = friendApi?.getFriendList()
+friendList?.data?.forEach { friend ->
+    logger.info("好友：${friend.nickname}（${friend.userId}）")
+    logger.info("备注：${friend.remark}")
+}
+```
+
+### getStrangerInfo
+
+获取陌生人信息。
+
+```kotlin
+suspend fun getStrangerInfo(
+    userId: Long,
+    noCache: Boolean = false
+): StrangerInfoResponse?
+```
+
+<ParamField path="userId" type="Long" required>
+  QQ 号
+</ParamField>
+
+<ParamField path="noCache" type="Boolean">
+  是否不使用缓存，默认 false
+</ParamField>
+
+**返回值**
+
+```kotlin
+data class StrangerInfoResponse(
+    val status: String,
+    val retcode: Int,
+    val data: StrangerInfo
+)
+
+data class StrangerInfo(
+    val userId: Long,
+    val nickname: String,
+    val sex: String,
+    val age: Int,
+    val qid: String,
+    val level: Int,
+    val loginDays: Int
+)
+```
+
+**示例**
+
+```kotlin
+val info = friendApi?.getStrangerInfo(987654321L)
+if (info != null) {
+    logger.info("昵称：${info.data.nickname}")
+    logger.info("等级：${info.data.level}")
+    logger.info("登录天数：${info.data.loginDays}")
+}
+```
+
+### getFriendsWithCategory
+
+获取好友分类列表。
+
+```kotlin
+suspend fun getFriendsWithCategory(): GetFriendsWithCategoryResponse?
+```
+
+**返回值**
+
+```kotlin
+data class GetFriendsWithCategoryResponse(
+    val status: String,
+    val retcode: Int,
+    val data: List<FriendCategory>
+)
+
+data class FriendCategory(
+    val categoryId: Int,
+    val categoryName: String,
+    val friends: List<FriendInfo>
+)
+```
+
+**示例**
+
+```kotlin
+val categories = friendApi?.getFriendsWithCategory()
+categories?.data?.forEach { category ->
+    logger.info("分类：${category.categoryName}")
+    category.friends.forEach { friend ->
+        logger.info("  - ${friend.nickname}")
+    }
+}
+```
+
+### getProfileLike
+
+获取用户点赞信息。
+
+```kotlin
+suspend fun getProfileLike(userId: Long? = null): GetProfileLikeResponse?
+```
+
+<ParamField path="userId" type="Long">
+  QQ 号，如果为 null 则获取自身点赞列表
+</ParamField>
+
+**返回值**
+
+```kotlin
+data class GetProfileLikeResponse(
+    val status: String,
+    val retcode: Int,
+    val data: ProfileLikeData
+)
+
+data class ProfileLikeData(
+    val likeCount: Int,
+    val likeList: List<LikeInfo>
+)
+
+data class LikeInfo(
+    val userId: Long,
+    val nickname: String,
+    val time: Long
+)
+```
+
+**示例**
+
+```kotlin
+// 获取自己的点赞列表
+val myLikes = friendApi?.getProfileLike()
+
+// 获取指定用户的点赞列表
+val userLikes = friendApi?.getProfileLike(987654321L)
+
+if (myLikes != null) {
+    logger.info("收到 ${myLikes.data.likeCount} 个赞")
+}
+```
+
+---
+
+## 消息相关
+
+### getFriendMsgHistory
+
+获取私聊消息历史记录。
+
+```kotlin
+suspend fun getFriendMsgHistory(
+    userId: Long,
+    messageSeq: Long? = null,
+    count: Int = 20
+): GetFriendMsgHistoryResponse?
+```
+
+<ParamField path="userId" type="Long" required>
+  QQ 号
+</ParamField>
+
+<ParamField path="messageSeq" type="Long">
+  起始消息序号，可选
+</ParamField>
+
+<ParamField path="count" type="Int">
+  获取消息数量，默认 20
+</ParamField>
+
+**返回值**
+
+```kotlin
+data class GetFriendMsgHistoryResponse(
+    val status: String,
+    val retcode: Int,
+    val data: FriendMsgHistoryData
+)
+
+data class FriendMsgHistoryData(
+    val messages: List<HistoryMessage>
+)
+
+data class HistoryMessage(
+    val messageId: Long,
+    val userId: Long,
+    val time: Long,
+    val message: List<OB11Segment>,
+    val rawMessage: String
+)
+```
+
+**示例**
+
+```kotlin
+val history = friendApi?.getFriendMsgHistory(
+    userId = 987654321L,
+    count = 50
+)
+
+history?.data?.messages?.forEach { msg ->
+    logger.info("[${msg.time}] ${msg.rawMessage}")
+}
+```
+
+### markPrivateMsgAsRead
+
+标记私聊消息已读。
+
+```kotlin
+suspend fun markPrivateMsgAsRead(userId: Long): Boolean
+```
+
+<ParamField path="userId" type="Long" required>
+  QQ 号
+</ParamField>
+
+**示例**
+
+```kotlin
+// 收到私聊消息后标记已读
+pluginContext.onPrivateMessage { event ->
+    // 处理消息...
+    friendApi?.markPrivateMsgAsRead(event.userId)
+}
+```
+
+### forwardFriendSingleMsg
+
+转发单条消息到私聊。
+
+```kotlin
+suspend fun forwardFriendSingleMsg(
+    userId: Long,
+    messageId: Long
+): Boolean
+```
+
+<ParamField path="userId" type="Long" required>
+  目标 QQ 号
+</ParamField>
+
+<ParamField path="messageId" type="Long" required>
+  要转发的消息 ID
+</ParamField>
+
+**示例**
+
+```kotlin
+// 转发群消息到私聊
+pluginContext.onGroupMessage { event ->
+    if (event.rawMessage.startsWith("/forward")) {
+        friendApi?.forwardFriendSingleMsg(
+            userId = 987654321L,
+            messageId = event.messageId
+        )
+    }
+}
+```
+
+---
+
+## 特殊功能
+
+### arkSharePeer
+
+推荐联系人（ArkSharePeer）。
+
+```kotlin
+suspend fun arkSharePeer(
+    groupId: Long,
+    userId: Long,
+    phoneNumber: String = ""
+): Boolean
+```
+
+<ParamField path="groupId" type="Long" required>
+  推荐到的群号
+</ParamField>
+
+<ParamField path="userId" type="Long" required>
+  要推荐的 QQ 号
+</ParamField>
+
+<ParamField path="phoneNumber" type="String">
+  电话号码，可选
+</ParamField>
+
+**示例**
+
+```kotlin
+// 推荐联系人到群
+friendApi?.arkSharePeer(
+    groupId = 123456789L,
+    userId = 987654321L
+)
+```
+
+---
+
+## 完整示例
+
+### 自动同意好友请求
+
+```kotlin
+class FriendManagerPlugin : PluginPackage() {
+    override suspend fun onBotContextReady() {
+        pluginContext.onRequest(
+            filter = { it is FriendRequest }
+        ) { event ->
+            if (event is FriendRequest) {
+                val success = friendApi?.setFriendAddRequest(
+                    flag = event.flag,
+                    approve = true,
+                    remark = "来自机器人"
+                )
+                
+                if (success == true) {
+                    // 发送欢迎消息
+                    delay(1000)
+                    val welcome = message {
+                        text("你好！感谢添加我为好友")
+                    }.build()
+                    messageApi?.sendPrivateMessage(event.userId, welcome)
+                    
+                    // 点赞 10 次
+                    friendApi?.sendLike(event.userId, 10)
+                }
+            }
+        }
+    }
+}
+```
+
+### 查询用户信息
+
+```kotlin
+pluginContext.onPrivateMessage(
+    filter = Filters.privateStartsWith("/info")
+) { event ->
+    val info = friendApi?.getStrangerInfo(event.userId)
+    
+    if (info != null) {
+        val reply = message {
+            text("你的信息：\n")
+            text("昵称：${info.data.nickname}\n")
+            text("等级：${info.data.level}\n")
+            text("登录天数：${info.data.loginDays}\n")
+            text("QID：${info.data.qid}")
+        }.build()
+        
+        messageApi?.sendPrivateMessage(event.userId, reply)
+    }
+}
+```
+
+### 好友列表管理
+
+```kotlin
+pluginContext.onPrivateMessage(
+    filter = Filters.privateExact("/friendlist")
+) { event ->
+    val friendList = friendApi?.getFriendList()
+    
+    if (friendList != null) {
+        val msg = buildString {
+            append("【好友列表】\n")
+            append("共 ${friendList.data.size} 个好友\n")
+            append("━━━━━━━━━━━\n")
+            friendList.data.take(10).forEach { friend ->
+                append("${friend.nickname}")
+                if (friend.remark.isNotEmpty()) {
+                    append("（${friend.remark}）")
+                }
+                append("\n")
+            }
+            if (friendList.data.size > 10) {
+                append("...\n")
+            }
+        }
+        
+        val reply = message { text(msg) }.build()
+        messageApi?.sendPrivateMessage(event.userId, reply)
+    }
+}
+```
+
+### 消息历史查询
+
+```kotlin
+pluginContext.onPrivateMessage(
+    filter = Filters.privateExact("/history")
+) { event ->
+    val history = friendApi?.getFriendMsgHistory(
+        userId = event.userId,
+        count = 20
+    )
+    
+    if (history != null) {
+        val msg = buildString {
+            append("【最近 20 条消息】\n")
+            history.data.messages.take(5).forEach { msg ->
+                val time = SimpleDateFormat("HH:mm:ss")
+                    .format(Date(msg.time * 1000))
+                append("[$time] ${msg.rawMessage}\n")
+            }
+        }
+        
+        val reply = message { text(msg) }.build()
+        messageApi?.sendPrivateMessage(event.userId, reply)
+    }
+}
+```
+
+### 好友互动
+
+```kotlin
+pluginContext.onPrivateMessage(
+    filter = Filters.privateKeyword("签到")
+) { event ->
+    // 点赞
+    val likeSuccess = friendApi?.sendLike(event.userId, 10)
+    
+    // 戳一戳
+    val pokeSuccess = friendApi?.friendPoke(event.userId)
+    
+    val reply = message {
+        text("签到成功！\n")
+        if (likeSuccess == true) {
+            text("✓ 已为你点赞 10 次\n")
+        }
+        if (pokeSuccess == true) {
+            text("✓ 已戳你一下")
+        }
+    }.build()
+    
+    messageApi?.sendPrivateMessage(event.userId, reply)
+}
+```
+
+---
+
+## 注意事项
+
+<Warning>
+  - 点赞每天有上限，超过会失败
+  - 点赞次数最多 10 次/次
+  - 部分用户可能设置了隐私，无法获取信息
+  - 删除好友操作不可逆，请谨慎使用
+  - 消息历史记录有数量限制
+</Warning>
+
+<Note>
+  - 好友请求的 `flag` 从 `FriendRequest` 事件中获取
+  - 建议在同意请求后延迟 1 秒再发送消息，避免消息丢失
+  - API 调用建议使用安全调用 `?.` 避免空指针
+  - `noCache` 参数用于获取最新信息，但会增加响应时间
+  - 使用 `markPrivateMsgAsRead` 可以防止消息累积
+  - 点赞和戳一戳有频率限制，不要频繁调用
+</Note>

@@ -1,0 +1,1118 @@
+---
+title: "群组 API"
+sidebarTitle: "群组"
+description: "群组管理与成员操作"
+icon: "users"
+---
+
+<Note>
+  群组 API 提供全面的群管理功能，包括成员管理、信息查询、公告、精华消息等。
+</Note>
+
+## 概述
+
+在插件中通过 `groupApi` 属性访问：
+
+```kotlin
+class MyPlugin : PluginPackage() {
+    override suspend fun onBotContextReady() {
+        groupApi?.setGroupBan(groupId, userId, 600)
+    }
+}
+```
+
+---
+
+## 群成员管理
+
+### setGroupKick
+
+踢出群成员。
+
+```kotlin
+suspend fun setGroupKick(
+    groupId: Long,
+    userId: Long,
+    rejectAddRequest: Boolean = false
+): Boolean
+```
+
+<ParamField path="groupId" type="Long" required>
+  群号
+</ParamField>
+
+<ParamField path="userId" type="Long" required>
+  要踢出的 QQ 号
+</ParamField>
+
+<ParamField path="rejectAddRequest" type="Boolean">
+  是否拒绝此人的加群请求，默认 false
+</ParamField>
+
+**示例**
+
+```kotlin
+groupApi?.setGroupKick(123456789L, 987654321L, rejectAddRequest = true)
+```
+
+### setGroupBan
+
+禁言群成员。
+
+```kotlin
+suspend fun setGroupBan(
+    groupId: Long,
+    userId: Long,
+    duration: Int = 1800
+): Boolean
+```
+
+<ParamField path="groupId" type="Long" required>
+  群号
+</ParamField>
+
+<ParamField path="userId" type="Long" required>
+  要禁言的 QQ 号
+</ParamField>
+
+<ParamField path="duration" type="Int">
+  禁言时长（秒），0 表示取消禁言，默认 1800 秒（30 分钟）
+</ParamField>
+
+**示例**
+
+```kotlin
+// 禁言 10 分钟
+groupApi?.setGroupBan(123456789L, 987654321L, 600)
+
+// 解除禁言
+groupApi?.setGroupBan(123456789L, 987654321L, 0)
+```
+
+### setGroupWholeBan
+
+全群禁言。
+
+```kotlin
+suspend fun setGroupWholeBan(
+    groupId: Long,
+    enable: Boolean = true
+): Boolean
+```
+
+<ParamField path="groupId" type="Long" required>
+  群号
+</ParamField>
+
+<ParamField path="enable" type="Boolean">
+  是否开启全群禁言，默认 true
+</ParamField>
+
+**示例**
+
+```kotlin
+// 开启全群禁言
+groupApi?.setGroupWholeBan(123456789L, true)
+
+// 关闭全群禁言
+groupApi?.setGroupWholeBan(123456789L, false)
+```
+
+### setGroupAdmin
+
+设置群管理员。
+
+```kotlin
+suspend fun setGroupAdmin(
+    groupId: Long,
+    userId: Long,
+    enable: Boolean = true
+): Boolean
+```
+
+<ParamField path="groupId" type="Long" required>
+  群号
+</ParamField>
+
+<ParamField path="userId" type="Long" required>
+  QQ 号
+</ParamField>
+
+<ParamField path="enable" type="Boolean">
+  true 设置管理员，false 取消管理员，默认 true
+</ParamField>
+
+**示例**
+
+```kotlin
+// 设置管理员
+groupApi?.setGroupAdmin(123456789L, 987654321L, true)
+
+// 取消管理员
+groupApi?.setGroupAdmin(123456789L, 987654321L, false)
+```
+
+---
+
+## 群名片与头衔
+
+### setGroupCard
+
+设置群名片。
+
+```kotlin
+suspend fun setGroupCard(
+    groupId: Long,
+    userId: Long,
+    card: String
+): Boolean
+```
+
+<ParamField path="groupId" type="Long" required>
+  群号
+</ParamField>
+
+<ParamField path="userId" type="Long" required>
+  QQ 号
+</ParamField>
+
+<ParamField path="card" type="String" required>
+  群名片，空字符串表示删除群名片
+</ParamField>
+
+**示例**
+
+```kotlin
+// 设置群名片
+groupApi?.setGroupCard(123456789L, 987654321L, "管理员")
+
+// 删除群名片
+groupApi?.setGroupCard(123456789L, 987654321L, "")
+```
+
+### setGroupSpecialTitle
+
+设置群头衔。
+
+```kotlin
+suspend fun setGroupSpecialTitle(
+    groupId: Long,
+    userId: Long,
+    specialTitle: String,
+    duration: Int = -1
+): Boolean
+```
+
+<ParamField path="groupId" type="Long" required>
+  群号
+</ParamField>
+
+<ParamField path="userId" type="Long" required>
+  QQ 号
+</ParamField>
+
+<ParamField path="specialTitle" type="String" required>
+  头衔，空字符串表示删除头衔
+</ParamField>
+
+<ParamField path="duration" type="Int">
+  有效期（秒），-1 表示永久，默认 -1
+</ParamField>
+
+**示例**
+
+```kotlin
+// 设置头衔
+groupApi?.setGroupSpecialTitle(123456789L, 987654321L, "群宠", -1)
+
+// 删除头衔
+groupApi?.setGroupSpecialTitle(123456789L, 987654321L, "")
+```
+
+---
+
+## 群信息管理
+
+### setGroupName
+
+设置群名。
+
+```kotlin
+suspend fun setGroupName(
+    groupId: Long,
+    groupName: String
+): Boolean
+```
+
+<ParamField path="groupId" type="Long" required>
+  群号
+</ParamField>
+
+<ParamField path="groupName" type="String" required>
+  新群名
+</ParamField>
+
+**示例**
+
+```kotlin
+groupApi?.setGroupName(123456789L, "新的群名称")
+```
+
+### setGroupPortrait
+
+设置群头像。
+
+```kotlin
+suspend fun setGroupPortrait(
+    groupId: Long,
+    file: String,
+    cache: Int = 1
+): Boolean
+```
+
+<ParamField path="groupId" type="Long" required>
+  群号
+</ParamField>
+
+<ParamField path="file" type="String" required>
+  图片文件路径
+</ParamField>
+
+<ParamField path="cache" type="Int">
+  是否使用缓存，默认 1
+</ParamField>
+
+**示例**
+
+```kotlin
+groupApi?.setGroupPortrait(123456789L, "C:/images/avatar.jpg")
+```
+
+### setGroupLeave
+
+退出群聊。
+
+```kotlin
+suspend fun setGroupLeave(
+    groupId: Long,
+    isDismiss: Boolean = false
+): Boolean
+```
+
+<ParamField path="groupId" type="Long" required>
+  群号
+</ParamField>
+
+<ParamField path="isDismiss" type="Boolean">
+  是否解散群（仅群主可用），默认 false
+</ParamField>
+
+**示例**
+
+```kotlin
+// 退出群聊
+groupApi?.setGroupLeave(123456789L, false)
+
+// 解散群（群主）
+groupApi?.setGroupLeave(123456789L, true)
+```
+
+---
+
+## 群信息查询
+
+### getGroupInfo
+
+获取群信息。
+
+```kotlin
+suspend fun getGroupInfo(
+    groupId: Long,
+    noCache: Boolean = false
+): GetGroupInfoResponse?
+```
+
+<ParamField path="groupId" type="Long" required>
+  群号
+</ParamField>
+
+<ParamField path="noCache" type="Boolean">
+  是否不使用缓存，默认 false
+</ParamField>
+
+**返回值**
+
+```kotlin
+data class GetGroupInfoResponse(
+    val status: String,
+    val retcode: Int,
+    val data: GroupInfo
+)
+
+data class GroupInfo(
+    val groupId: Long,
+    val groupName: String,
+    val memberCount: Int,
+    val maxMemberCount: Int
+)
+```
+
+**示例**
+
+```kotlin
+val info = groupApi?.getGroupInfo(123456789L)
+if (info != null) {
+    logger.info("群名：${info.data.groupName}")
+    logger.info("成员数：${info.data.memberCount}")
+}
+```
+
+### getGroupList
+
+获取群列表。
+
+```kotlin
+suspend fun getGroupList(): GetGroupListResponse?
+```
+
+**返回值**
+
+```kotlin
+data class GetGroupListResponse(
+    val status: String,
+    val retcode: Int,
+    val data: List<GroupInfo>
+)
+```
+
+**示例**
+
+```kotlin
+val groupList = groupApi?.getGroupList()
+groupList?.data?.forEach { group ->
+    logger.info("群号：${group.groupId}，群名：${group.groupName}")
+}
+```
+
+### getGroupMemberInfo
+
+获取群成员信息。
+
+```kotlin
+suspend fun getGroupMemberInfo(
+    groupId: Long,
+    userId: Long,
+    noCache: Boolean = false
+): GetGroupMemberInfoResponse?
+```
+
+<ParamField path="groupId" type="Long" required>
+  群号
+</ParamField>
+
+<ParamField path="userId" type="Long" required>
+  QQ 号
+</ParamField>
+
+<ParamField path="noCache" type="Boolean">
+  是否不使用缓存，默认 false
+</ParamField>
+
+**返回值**
+
+```kotlin
+data class GroupMemberInfo(
+    val groupId: Long,
+    val userId: Long,
+    val nickname: String,
+    val card: String,
+    val sex: String,
+    val age: Int,
+    val area: String,
+    val joinTime: Long,
+    val lastSentTime: Long,
+    val level: String,
+    val role: String,
+    val unfriendly: Boolean,
+    val title: String,
+    val titleExpireTime: Long,
+    val cardChangeable: Boolean
+)
+```
+
+**示例**
+
+```kotlin
+val memberInfo = groupApi?.getGroupMemberInfo(123456789L, 987654321L)
+if (memberInfo != null) {
+    logger.info("昵称：${memberInfo.data.nickname}")
+    logger.info("角色：${memberInfo.data.role}")
+}
+```
+
+### getGroupMemberList
+
+获取群成员列表。
+
+```kotlin
+suspend fun getGroupMemberList(
+    groupId: Long,
+    noCache: Boolean = false
+): GetGroupMemberListResponse?
+```
+
+<ParamField path="groupId" type="Long" required>
+  群号
+</ParamField>
+
+<ParamField path="noCache" type="Boolean">
+  是否不使用缓存，默认 false
+</ParamField>
+
+**返回值**
+
+```kotlin
+data class GetGroupMemberListResponse(
+    val status: String,
+    val retcode: Int,
+    val data: List<GroupMemberInfo>
+)
+```
+
+**示例**
+
+```kotlin
+val memberList = groupApi?.getGroupMemberList(123456789L)
+memberList?.data?.forEach { member ->
+    logger.info("成员：${member.nickname}（${member.userId}）")
+}
+```
+
+### getGroupInfoEx
+
+获取群组额外信息。
+
+```kotlin
+suspend fun getGroupInfoEx(groupId: Long): GetGroupInfoExResponse?
+```
+
+<ParamField path="groupId" type="Long" required>
+  群号
+</ParamField>
+
+**示例**
+
+```kotlin
+val extraInfo = groupApi?.getGroupInfoEx(123456789L)
+```
+
+---
+
+## 群荣誉信息
+
+### getGroupHonorInfo
+
+获取群荣誉信息。
+
+```kotlin
+suspend fun getGroupHonorInfo(
+    groupId: Long,
+    type: String = "all"
+): GetGroupHonorInfoResponse?
+```
+
+<ParamField path="groupId" type="Long" required>
+  群号
+</ParamField>
+
+<ParamField path="type" type="String">
+  荣誉类型：`talkative`、`performer`、`legend`、`strong_newbie`、`emotion`、`all`，默认 `all`
+</ParamField>
+
+**荣誉类型说明**
+
+| 类型 | 说明 |
+|------|------|
+| `talkative` | 龙王 |
+| `performer` | 群聊之火 |
+| `legend` | 群聊炽焰 |
+| `strong_newbie` | 冒尖小春笋 |
+| `emotion` | 快乐源泉 |
+| `all` | 所有荣誉 |
+
+**示例**
+
+```kotlin
+val honor = groupApi?.getGroupHonorInfo(123456789L, "talkative")
+```
+
+---
+
+## 群请求处理
+
+### setGroupAddRequest
+
+处理加群请求/邀请。
+
+```kotlin
+suspend fun setGroupAddRequest(
+    flag: String,
+    subType: String,
+    approve: Boolean = true,
+    reason: String = ""
+): Boolean
+```
+
+<ParamField path="flag" type="String" required>
+  加群请求的 flag（从 `GroupRequest` 事件中获取）
+</ParamField>
+
+<ParamField path="subType" type="String" required>
+  请求类型：`add` 或 `invite`
+</ParamField>
+
+<ParamField path="approve" type="Boolean">
+  是否同意请求/邀请，默认 true
+</ParamField>
+
+<ParamField path="reason" type="String">
+  拒绝理由（仅拒绝时有效）
+</ParamField>
+
+**示例**
+
+```kotlin
+pluginContext.onRequest(
+    filter = { it is GroupRequest }
+) { event ->
+    if (event is GroupRequest) {
+        groupApi?.setGroupAddRequest(
+            flag = event.flag,
+            subType = event.subType,
+            approve = true
+        )
+    }
+}
+```
+
+### getGroupSystemMsg
+
+获取群系统消息。
+
+```kotlin
+suspend fun getGroupSystemMsg(): GetGroupSystemMsgResponse?
+```
+
+**示例**
+
+```kotlin
+val systemMsg = groupApi?.getGroupSystemMsg()
+```
+
+### getGroupIgnoreAddRequest
+
+获取群组忽略的通知。
+
+```kotlin
+suspend fun getGroupIgnoreAddRequest(
+    groupId: Long
+): GetGroupIgnoreAddRequestResponse?
+```
+
+<ParamField path="groupId" type="Long" required>
+  群号
+</ParamField>
+
+**示例**
+
+```kotlin
+val ignoredRequests = groupApi?.getGroupIgnoreAddRequest(123456789L)
+```
+
+---
+
+## 精华消息
+
+### getEssenceMsgList
+
+获取精华消息列表。
+
+```kotlin
+suspend fun getEssenceMsgList(
+    groupId: Long
+): GetEssenceMsgListResponse?
+```
+
+<ParamField path="groupId" type="Long" required>
+  群号
+</ParamField>
+
+**示例**
+
+```kotlin
+val essenceList = groupApi?.getEssenceMsgList(123456789L)
+```
+
+### setEssenceMsg
+
+设置精华消息。
+
+```kotlin
+suspend fun setEssenceMsg(messageId: Long): Boolean
+```
+
+<ParamField path="messageId" type="Long" required>
+  消息 ID
+</ParamField>
+
+**示例**
+
+```kotlin
+groupApi?.setEssenceMsg(messageId)
+```
+
+### deleteEssenceMsg
+
+移出精华消息。
+
+```kotlin
+suspend fun deleteEssenceMsg(messageId: Long): Boolean
+```
+
+<ParamField path="messageId" type="Long" required>
+  消息 ID
+</ParamField>
+
+**示例**
+
+```kotlin
+groupApi?.deleteEssenceMsg(messageId)
+```
+
+---
+
+## 群公告
+
+### sendGroupNotice
+
+发送群公告。
+
+```kotlin
+suspend fun sendGroupNotice(
+    groupId: Long,
+    content: String,
+    image: String = ""
+): Boolean
+```
+
+<ParamField path="groupId" type="Long" required>
+  群号
+</ParamField>
+
+<ParamField path="content" type="String" required>
+  公告内容
+</ParamField>
+
+<ParamField path="image" type="String">
+  公告图片，可选
+</ParamField>
+
+**示例**
+
+```kotlin
+groupApi?.sendGroupNotice(
+    groupId = 123456789L,
+    content = "群规更新，请查看"
+)
+```
+
+### getGroupNotice
+
+获取群公告列表。
+
+```kotlin
+suspend fun getGroupNotice(groupId: Long): GetGroupNoticeResponse?
+```
+
+<ParamField path="groupId" type="Long" required>
+  群号
+</ParamField>
+
+**示例**
+
+```kotlin
+val notices = groupApi?.getGroupNotice(123456789L)
+```
+
+### delGroupNotice
+
+删除群公告。
+
+```kotlin
+suspend fun delGroupNotice(
+    groupId: Long,
+    noticeId: String
+): Boolean
+```
+
+<ParamField path="groupId" type="Long" required>
+  群号
+</ParamField>
+
+<ParamField path="noticeId" type="String" required>
+  公告 ID
+</ParamField>
+
+**示例**
+
+```kotlin
+groupApi?.delGroupNotice(123456789L, "notice_id_123")
+```
+
+---
+
+## 群消息相关
+
+### getGroupMsgHistory
+
+获取群消息历史记录。
+
+```kotlin
+suspend fun getGroupMsgHistory(
+    groupId: Long,
+    messageSeq: Long? = null
+): GetGroupMsgHistoryResponse?
+```
+
+<ParamField path="groupId" type="Long" required>
+  群号
+</ParamField>
+
+<ParamField path="messageSeq" type="Long">
+  消息序号，不提供则从最新消息开始
+</ParamField>
+
+**示例**
+
+```kotlin
+val history = groupApi?.getGroupMsgHistory(123456789L)
+history?.data?.messages?.forEach { msg ->
+    logger.info("消息：${msg.rawMessage}")
+}
+```
+
+### markGroupMsgAsRead
+
+标记群聊消息已读。
+
+```kotlin
+suspend fun markGroupMsgAsRead(groupId: Long): Boolean
+```
+
+<ParamField path="groupId" type="Long" required>
+  群号
+</ParamField>
+
+**示例**
+
+```kotlin
+groupApi?.markGroupMsgAsRead(123456789L)
+```
+
+---
+
+## 群互动
+
+### groupPoke
+
+群聊戳一戳。
+
+```kotlin
+suspend fun groupPoke(
+    groupId: Long,
+    userId: Long
+): Boolean
+```
+
+<ParamField path="groupId" type="Long" required>
+  群号
+</ParamField>
+
+<ParamField path="userId" type="Long" required>
+  要戳的 QQ 号
+</ParamField>
+
+**示例**
+
+```kotlin
+groupApi?.groupPoke(123456789L, 987654321L)
+```
+
+### getGroupAtAllRemain
+
+获取群 @全体成员 剩余次数。
+
+```kotlin
+suspend fun getGroupAtAllRemain(
+    groupId: Long
+): GetGroupAtAllRemainResponse?
+```
+
+<ParamField path="groupId" type="Long" required>
+  群号
+</ParamField>
+
+**示例**
+
+```kotlin
+val remain = groupApi?.getGroupAtAllRemain(123456789L)
+if (remain != null) {
+    logger.info("剩余次数：${remain.data.remainCount}")
+}
+```
+
+---
+
+## 群特殊功能
+
+### sendGroupSign
+
+群打卡。
+
+```kotlin
+suspend fun sendGroupSign(groupId: Long): Boolean
+```
+
+<ParamField path="groupId" type="Long" required>
+  群号
+</ParamField>
+
+**示例**
+
+```kotlin
+groupApi?.sendGroupSign(123456789L)
+```
+
+### setGroupSign
+
+群签到。
+
+```kotlin
+suspend fun setGroupSign(groupId: Long): Boolean
+```
+
+<ParamField path="groupId" type="Long" required>
+  群号
+</ParamField>
+
+**示例**
+
+```kotlin
+groupApi?.setGroupSign(123456789L)
+```
+
+### getGroupShutList
+
+获取群聊被禁言用户列表。
+
+```kotlin
+suspend fun getGroupShutList(
+    groupId: Long
+): GetGroupShutListResponse?
+```
+
+<ParamField path="groupId" type="Long" required>
+  群号
+</ParamField>
+
+**示例**
+
+```kotlin
+val shutList = groupApi?.getGroupShutList(123456789L)
+shutList?.data?.forEach { user ->
+    logger.info("被禁言：${user.userId}")
+}
+```
+
+### sendGroupAiRecord
+
+群聊发送 AI 语音。
+
+```kotlin
+suspend fun sendGroupAiRecord(
+    groupId: Long,
+    character: String,
+    text: String
+): Boolean
+```
+
+<ParamField path="groupId" type="Long" required>
+  群号
+</ParamField>
+
+<ParamField path="character" type="String" required>
+  AI 角色
+</ParamField>
+
+<ParamField path="text" type="String" required>
+  语音文本
+</ParamField>
+
+**示例**
+
+```kotlin
+groupApi?.sendGroupAiRecord(
+    groupId = 123456789L,
+    character = "narrator",
+    text = "欢迎加入本群"
+)
+```
+
+---
+
+## 完整示例
+
+### 群管理机器人
+
+```kotlin
+class GroupManagerPlugin : PluginPackage() {
+    override suspend fun onBotContextReady() {
+        // 关键词禁言
+        pluginContext.onGroupMessage(
+            filter = Filters.groupKeyword("广告", "刷屏")
+        ) { event ->
+            if (event.sender.role in listOf("admin", "owner")) {
+                return@onGroupMessage
+            }
+            
+            groupApi?.setGroupBan(event.groupId, event.userId, 600)
+            
+            val reply = message {
+                text("检测到违规内容，已禁言 10 分钟")
+            }.build()
+            messageApi?.sendGroupMessage(event.groupId, reply)
+        }
+        
+        // 管理命令
+        pluginContext.onGroupMessage(
+            filter = Filters.groupStartsWith("/ban")
+        ) { event ->
+            if (event.sender.role !in listOf("admin", "owner")) {
+                return@onGroupMessage
+            }
+            
+            val atList = event.message.filterIsInstance<OB11Segment.At>()
+            atList.forEach { at ->
+                groupApi?.setGroupBan(
+                    event.groupId,
+                    at.data.qq.toLong(),
+                    600
+                )
+            }
+        }
+    }
+}
+```
+
+### 欢迎新成员
+
+```kotlin
+pluginContext.onNotice(
+    filter = { it is GroupIncreaseNotice }
+) { event ->
+    if (event is GroupIncreaseNotice) {
+        delay(1000)
+        
+        val welcome = message {
+            at(event.userId)
+            text(" 欢迎加入本群！\n")
+            text("请阅读群公告，遵守群规")
+        }.build()
+        
+        messageApi?.sendGroupMessage(event.groupId, welcome)
+    }
+}
+```
+
+### 群信息查询
+
+```kotlin
+pluginContext.onGroupMessage(
+    filter = Filters.groupExact("/groupinfo")
+) { event ->
+    val info = groupApi?.getGroupInfo(event.groupId)
+    
+    if (info != null) {
+        val msg = message {
+            text("【群信息】\n")
+            text("群名：${info.data.groupName}\n")
+            text("成员数：${info.data.memberCount}\n")
+            text("上限：${info.data.maxMemberCount}")
+        }.build()
+        
+        messageApi?.sendGroupMessage(event.groupId, msg)
+    }
+}
+```
+
+### 设置精华消息
+
+```kotlin
+pluginContext.onGroupMessage(
+    filter = Filters.groupStartsWith("/essence")
+) { event ->
+    if (event.sender.role in listOf("admin", "owner")) {
+        val success = groupApi?.setEssenceMsg(event.messageId)
+        
+        if (success == true) {
+            val reply = message {
+                text("已设置为精华消息")
+            }.build()
+            messageApi?.sendGroupMessage(event.groupId, reply)
+        }
+    }
+}
+```
+
+### 发送群公告
+
+```kotlin
+pluginContext.onGroupMessage(
+    filter = Filters.groupStartsWith("/notice ")
+) { event ->
+    if (event.sender.role !in listOf("admin", "owner")) {
+        return@onGroupMessage
+    }
+    
+    val content = event.rawMessage.removePrefix("/notice ")
+    val success = groupApi?.sendGroupNotice(event.groupId, content)
+    
+    if (success == true) {
+        val reply = message {
+            text("群公告已发送")
+        }.build()
+        messageApi?.sendGroupMessage(event.groupId, reply)
+    }
+}
+```
+
+---
+
+## 注意事项
+
+<Warning>
+  - 大部分操作需要机器人有管理员或群主权限
+  - 无权限时操作会失败，返回 false 或 null
+  - 禁言时长最长 30 天（2592000 秒）
+  - 群主无法被设置为管理员或禁言
+  - 设置群头像、群名等操作可能有频率限制
+</Warning>
+
+<Note>
+  - 使用 `noCache = true` 获取最新信息
+  - 群名片和头衔修改可能有频率限制
+  - API 调用建议使用 `?.` 安全调用避免空指针
+  - 精华消息需要管理员权限
+  - @全体成员有次数限制，建议先查询剩余次数
+  - 消息历史记录有数量限制
+</Note>
