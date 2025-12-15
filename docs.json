@@ -2,7 +2,7 @@
   "$schema": "https://mintlify.com/docs.json",
   "theme": "mint",
   "name": "梦璃",
-  "description": "梦璃 YumeYuka YumeLira ",
+  "description": "真正的成长并非抹杀过去的自己，而是在接纳伤痛后,依然有选择善良的勇气",
   "colors": {
     "primary": "#f56c6c",
     "light": "#fbf7f7",
@@ -163,7 +163,7 @@
       "application-name": "梦璃",
       "msapplication-TileColor": "#f56c6c",
       "og:type": "website",
-      "og:image": "/logo/logo.jpg",
+      "og:image": "https://s3.yumeyuka.plus/2025/23-22-30.webp",
       "og:site_name": "梦璃",
       "og:locale": "zh_CN",
       "canonical": "https://yumeyuka.icu"
