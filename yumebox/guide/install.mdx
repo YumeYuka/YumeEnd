@@ -71,6 +71,25 @@ icon: "square-mouse-pointer"
   </Step>
 </Steps>
 
+### 外部控制 API
+
+YumeBox 支持通过 Android Intent 进行外部控制，使其他应用能够启动或停止代理服务。
+
+- 启动 Clash.Meta 服务
+
+向活动 `com.github.yumelira.yumebox.MainActivity` 发送带有动作
+`com.github.yumelira.yumebox.action.START_CLASH` 的 Intent
+
+- 停止 Clash.Meta 服务
+
+向活动 `com.github.yumelira.yumebox.MainActivity` 发送带有动作
+`com.github.yumelira.yumebox.action.STOP_CLASH` 的 Intent
+
+- 导入配置文件
+
+使用 URL Scheme：`clash://install-config?url=<encoded URI>`
+或 `clashmeta://install-config?url=<encoded URI>`
+
 ## 子功能扩展安装
 
 YumeBox 还提供 SubStore 扩展，提供额外的配置管理功能：
