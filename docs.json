@@ -26,6 +26,20 @@
     "languages": [
       {
         "language": "zh",
+        "global": {
+          "anchors": [
+            {
+              "anchor": "Github",
+              "icon": "github",
+              "href": "https://github.com/YumeYuka"
+            },
+            {
+              "anchor": "加入群组",
+              "icon": "telegram",
+              "href": "https://t.me/OOM_Group"
+            }
+          ]
+        },
         "dropdowns": [
           {
             "dropdown": "幻想乡",
@@ -34,7 +48,10 @@
               {
                 "group": "简介",
                 "icon": "book-open",
-                "pages": ["index", "about"]
+                "pages": [
+                  "index",
+                  "about"
+                ]
               },
               {
                 "group": "最新发布",
@@ -46,26 +63,6 @@
                   "blog/apex-to-www",
                   "blog/CloudPress"
                 ]
-              }
-            ]
-          },
-          {
-            "dropdown": "YumeBox",
-            "icon": "arrow-up-down",
-            "pages": [
-              {
-                "group": "开始使用",
-                "icon": "book-open",
-                "pages": [
-                  "yumebox/index",
-                  "yumebox/guide/install",
-                  "yumebox/guide/building"
-                ]
-              },
-              {
-                "group": "更新日志",
-                "icon": "history",
-                "pages": ["yumebox/update/history"]
               }
             ]
           },
@@ -118,21 +115,7 @@
               }
             ]
           }
-        ],
-        "global": {
-          "anchors": [
-            {
-              "anchor": "Github",
-              "icon": "github",
-              "href": "https://github.com/YumeYuka"
-            },
-            {
-              "anchor": "加入群组",
-              "icon": "telegram",
-              "href": "https://t.me/OOM_Group"
-            }
-          ]
-        }
+        ]
       }
     ]
   },
