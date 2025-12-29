@@ -21,7 +21,10 @@
   "icons": {
     "library": "lucide"
   },
-  "favicon": "/logo/logo.jpg",
+  "favicon": {
+    "light": "/logo/logo.jpg",
+    "dark": "/logo/logo.jpg"
+  },
   "navigation": {
     "languages": [
       {
