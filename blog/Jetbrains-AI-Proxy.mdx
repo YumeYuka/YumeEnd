@@ -1,12 +1,24 @@
 ---
-title: "Jetbrains-AI-Proxy"
+title: "YumeProxy"
 sidebarTitle: "C++ 补全 Jetbrains AI"
 icon: "waypoints"
 ---
 
-突然发现生成文档注释挺好用的, Jetbrains 默认给的积分根本不够嚯嚯的,说是本月底推 BYOK, 等不及了,写了一晚上造出来了. OpenAI 端点转OpenAI 端点
-....
+突然发现 Jetbrains  生成文档注释挺好用的, 但是 Jetbrains 默认给的 10 点积分根本不够
 
-git message 和 文档注释这种选小模型比较快,但是 Jetbrains 不知道用的什么模型,生成文档注释就是很快,用自己外接的模型就是慢的出奇
+jetbrains blog 11 月的动态说是在 2025 年底之前推出 接入自己的 API 端点,支持 OpenAI 格式,但是在此之前就已经支持了 OpenAI [Ollama](https://ollama.com/) 等端点的格式,但是不能不能使用自定义 key
 
-https://github.com/YumeYuka/Jetbrains-AI-Proxy
+思路上就是做一个代理转<Tooltip tip="">发的功能, litellm 已经做出来这部分了,且支持多个 代理提供商,但是我不喜欢,因为是 </Tooltip>`python`<Tooltip tip="">, 于是,YumeProxy 就出来了, C++ 编写,非常友好,支持流式输出,非常轻量,有配置就能跑</Tooltip>
+
+<Info>
+  自从用过 AI 生成 git message 之后我就再也没有手写过 hhh...
+</Info>
+
+### 项目地址
+
+- https://github.com/YumeYuka/Jetbrains-AI-Proxy
+
+### 用到的一些库
+
+- https://github.com/yhirose/cpp-httplib
+- https://github.com/nlohmann/json
