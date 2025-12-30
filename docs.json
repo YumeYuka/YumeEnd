@@ -60,7 +60,7 @@
                 "group": "最新发布",
                 "icon": "calendar",
                 "pages": [
-                  "zh/yume-fetch",
+                  "blog/yume-fetch",
                   "blog/Jetbrains-AI-Proxy",
                   "blog/YumeBot",
                   "blog/edgeone-trap-diary",
