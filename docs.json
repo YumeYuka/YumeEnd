@@ -8,16 +8,6 @@
     "light": "#fbf7f7",
     "dark": "#ef8e8e"
   },
-  "fonts": {
-    "heading": {
-      "family": "Ubuntu Mono",
-      "weight": 700
-    },
-    "body": {
-      "family": "JetBrains Mono",
-      "weight": 400
-    }
-  },
   "icons": {
     "library": "lucide"
   },
@@ -176,5 +166,8 @@
       "title": "找不到页面",
       "description": "这个_页面_到底**发生了什么**？"
     }
+  },
+  "styling": {
+    "latex": true
   }
 }
