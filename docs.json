@@ -60,6 +60,7 @@
                 "group": "最新发布",
                 "icon": "calendar",
                 "pages": [
+                  "blog/file",
                   "blog/yume-fetch",
                   "blog/Jetbrains-AI-Proxy",
                   "blog/YumeBot",
