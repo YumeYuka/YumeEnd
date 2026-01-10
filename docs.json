@@ -43,7 +43,8 @@
                 "icon": "book-open",
                 "pages": [
                   "index",
-                  "about"
+                  "about",
+                  "friends"
                 ]
               },
               {
