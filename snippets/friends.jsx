@@ -1,15 +1,5 @@
-export const FriendCard = ({name, role, image, bio, url, email, tooltip}) => {
-	const [address, setAddress] = useState('')
-	const [hasMail, setHasMail] = useState(false)
-
-	useEffect(() => {
-		if (email) {
-			setHasMail(true)
-			setAddress(`mailto:${email}@oom-wg.dev`)
-		}
-	}, [email])
-
-	const CardContent = (
+export const FriendCard = ({name, role, image, bio, url}) => {
+	return (
 		<a
 			href={url}
 			className='group flex items-start sm:items-center gap-5 p-5 rounded-xl w-full
@@ -52,14 +42,6 @@ export const FriendCard = ({name, role, image, bio, url, email, tooltip}) => {
 				</p>
 			</div>
 		</a>
-	)
-
-	return hasMail ? (
-		<Tooltip headline={name} tip={tooltip} cta='邮件联系' href={address}>
-			{CardContent}
-		</Tooltip>
-	) : (
-		CardContent
 	)
 }
 
