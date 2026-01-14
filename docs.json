@@ -116,8 +116,8 @@
     ]
   },
   "logo": {
-    "light": "/logo/logo.jpg",
-    "dark": "/logo/logo.jpg"
+    "light": "/logo/logo.webp",
+    "dark": "/logo/logo.webp"
   },
   "seo": {
     "metatags": {
