@@ -4,9 +4,9 @@
   "name": "梦璃",
   "description": "真正的成长并非抹杀过去的自己，而是在接纳伤痛后,依然有选择善良的勇气",
   "colors": {
-    "primary": "#f56c6c",
+    "primary": "#bfeef3",
     "light": "#fbf7f7",
-    "dark": "#ef8e8e"
+    "dark": "#6fb1c2"
   },
   "icons": {
     "library": "lucide"
@@ -43,7 +43,6 @@
                 "icon": "book-open",
                 "pages": [
                   "index",
-                  "about",
                   "friends"
                 ]
               },
@@ -51,10 +50,6 @@
                 "group": "最新发布",
                 "icon": "calendar",
                 "pages": [
-                  "blog/file",
-                  "blog/yume-fetch",
-                  "blog/Jetbrains-AI-Proxy",
-                  "blog/YumeBot",
                   "blog/edgeone-trap-diary",
                   "blog/apex-to-www",
                   "blog/CloudPress"
@@ -170,5 +165,8 @@
   },
   "styling": {
     "latex": true
+  },
+  "interaction": {
+    "drilldown": true
   }
 }
