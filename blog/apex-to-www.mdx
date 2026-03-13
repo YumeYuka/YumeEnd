@@ -4,15 +4,17 @@ icon: "ethernet-port"
 sidebarTitle: "EdgeOne Part 1"
 ---
 
-
-<img
+<Frame>
+  <img
     src="https://s3.yumeyuka.plus/2026/03/f9f8bef3e64fbf6af9233ad7352d19cc.webp"
-    noZoom
-/>
+    noZoom={true}
+  />
+</Frame>
 
 ## 结论：
 
 Pages 与 CDN 集成注意事项：
+
 - 直接解析到 CDN 节点返回 418。
 - 需要中转子域名，填写中转域名作为源站。
 - Apex 域名不适用中转，可能与自定义 NS、DNSSEC 冲突。
@@ -26,7 +28,7 @@ Pages 与 CDN 集成注意事项：
 2. 创建 `index.html` 和 `edgeone.json` 文件，并在 `index.html` 中填入相同的 `head` 内容。
 3. 在 `edgeone.json` 中配置重定向规则，使 Apex 重定向到 www 子域。
 
-```html title="index.html" collapse={11-43} ins={"1":8-9} ins={"2":45-48} expandable icon="code"
+```html index.html expandable icon=code
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -34,18 +36,18 @@ Pages 与 CDN 集成注意事项：
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>梦璃酱 - YumeYuka Blog of Dreams</title>
     
-    <!-- 重定向 -->
+    {/*  重定向  */}
     <meta http-equiv="refresh" content="0; url=https://www.yumeyuka.plus/">
     
-    <!-- 规范链接 -->
+    {/*  规范链接  */}
     <link rel="canonical" href="https://www.yumeyuka.plus/">
     
-    <!-- 基本SEO标签 -->
+    {/*  基本SEO标签  */}
     <meta name="description" content="梦璃酱 - YumeYuka Blog of Dreams">
     <meta name="author" content="梦璃酱 - YumeYuka">
     <meta name="robots" content="noindex, nofollow">
     
-    <!-- Open Graph 标签 -->
+    {/*  Open Graph 标签  */}
     <meta property="og:site_name" content="梦璃酱">
     <meta property="og:locale" content="zh_CN">
     <meta property="og:url" content="https://www.yumeyuka.plus/">
@@ -58,20 +60,20 @@ Pages 与 CDN 集成注意事项：
     <meta property="og:image:type" content="image/webp">
     <meta property="og:type" content="website">
     
-    <!-- Twitter 卡片标签 -->
+    {/*  Twitter 卡片标签  */}
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:site" content="梦璃酱">
     <meta property="twitter:url" content="https://www.yumeyuka.plus/">
     <meta name="twitter:title" content="一つの心臓の両面に傷を負う">
     <meta name="twitter:image" content="https://s3.yumeyuka.plus/2025/23-22-30.webp">
     
-    <!-- Telegram 专用标签 -->
+    {/*  Telegram 专用标签  */}
     <meta property="telegram:channel" content="@yumeyuka">
     
-    <!-- 图标 -->
+    {/*  图标  */}
     <link rel="icon" href="https://s3.yumeyuka.plus/2025/Image_1758222788424.webp" type="image/webp">
     
-    <!-- JavaScript重定向（备用方案） -->
+    {/*  JavaScript重定向（备用方案）  */}
     <script>
         window.location.replace("https://www.yumeyuka.plus/");
     </script>
@@ -80,7 +82,7 @@ Pages 与 CDN 集成注意事项：
 </html>
 ```
 
-```json title = "edgeone.json" expandable icon="code"
+```json edgeone.json expandable icon=code
 {
     "redirects": [
       {
@@ -95,21 +97,19 @@ Pages 与 CDN 集成注意事项：
 ## 如何解析
 
 # 部署流程
+
 1. 将代码部署到 Pages 的新项目中。
 2. 将 apex 域或目标重定向域解析到这个新项目。
 3. 为源站项目添加子域中转，使用 CDN 加速页，选择回源策略使用源站。
 
 <Frame>
-    <img src="https://s3.yumeyuka.plus/2025/09/caff028c6ffdf2f8739643e99854333e.webp"
-         alt="Descriptive alt text"/>
+  ![Descriptive alt text](https://s3.yumeyuka.plus/2025/09/caff028c6ffdf2f8739643e99854333e.webp)
 </Frame>
 
 <Frame>
-    <img src="https://s3.yumeyuka.plus/2025/09/8f8889b95224d1163028a49f25455a73.webp"
-         alt="Descriptive alt text"/>
+  ![Descriptive alt text](https://s3.yumeyuka.plus/2025/09/8f8889b95224d1163028a49f25455a73.webp)
 </Frame>
 
 <Frame>
-    <img src="https://s3.yumeyuka.plus/2025/09/7d07df27da68d39948e7b374369afc65.webp"
-         alt="Descriptive alt text"/>
+  ![Descriptive alt text](https://s3.yumeyuka.plus/2025/09/7d07df27da68d39948e7b374369afc65.webp)
 </Frame>
