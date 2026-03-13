@@ -4,6 +4,8 @@ description: "Mintlify 文档编写的工作关系、项目背景和写作规范
 keywords: ['Mintlify', '文档', '规范', '写作', '项目']
 ---
 
+
+
 # Mintlify 文档
 
 ## 工作关系

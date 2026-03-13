@@ -12,8 +12,8 @@
     "library": "lucide"
   },
   "favicon": {
-    "light": "/logo/logo.webp",
-    "dark": "/logo/logo.webp"
+    "light": "/logo/logo.png",
+    "dark": "/logo/logo.png"
   },
   "navigation": {
     "languages": [
@@ -29,7 +29,7 @@
             {
               "anchor": "加入群组",
               "icon": "telegram",
-              "href": "https://t.me/OOM_Group"
+              "href": "https://join.oom-wg.dev"
             }
           ]
         },
@@ -111,8 +111,8 @@
     ]
   },
   "logo": {
-    "light": "/logo/logo.webp",
-    "dark": "/logo/logo.webp"
+    "light": "/logo/logo.png",
+    "dark": "/logo/logo.png"
   },
   "seo": {
     "metatags": {
@@ -147,7 +147,13 @@
     "timestamp": true
   },
   "contextual": {
-    "options": ["copy", "view", "chatgpt", "claude", "perplexity"]
+    "options": [
+      "copy",
+      "view",
+      "chatgpt",
+      "claude",
+      "perplexity"
+    ]
   },
   "footer": {
     "socials": {
