@@ -16,7 +16,7 @@ export const FriendCard = ({ name, role, image, bio, url }) => {
                transition-colors duration-200"
 		>
 			<div className="shrink-0">
-				<div className="w-16 h-16 rounded-full overflow-hidden bg-[#358e98]/10 ring-2 ring-[#358e98]/20">
+				<div className="w-16 h-16 rounded-full overflow-hidden bg-[#358e98]/10 ring-2 ring-[#358e98]/60 dark:ring-[#71c6db]/50">
 					<img
 						src={image || fallbackAvatar}
 						alt={name}
@@ -34,7 +34,7 @@ export const FriendCard = ({ name, role, image, bio, url }) => {
 					<h3 className="text-lg font-semibold m-0 text-zinc-900 dark:text-zinc-100 truncate">
 						{name}
 					</h3>
-					<span className="shrink-0 text-xs font-medium text-[#358e98] dark:text-[#71c6db] bg-[#358e98]/10 dark:bg-[#71c6db]/10 px-3 py-1 rounded-full border border-[#358e98]/20 dark:border-[#71c6db]/20">
+					<span className="shrink-0 text-xs font-medium text-[#358e98] dark:text-[#71c6db] bg-[#358e98]/10 dark:bg-[#71c6db]/10 px-3 py-1 rounded-full">
 						{role}
 					</span>
 				</div>
