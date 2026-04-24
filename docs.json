@@ -111,10 +111,7 @@
       }
     ]
   },
-  "logo": {
-    "light": "/logo/logo.png",
-    "dark": "/logo/logo.png"
-  },
+  "logo": "/logo/logo.png",
   "seo": {
     "metatags": {
       "robots": "index, follow",
@@ -142,7 +139,8 @@
       "og:site_name": "真正的成长并非抹杀过去的自己，而是在接纳伤痛后,依然有选择善良的勇气",
       "og:locale": "zh_CN",
       "canonical": "https://yumeyuka.icu"
-    }
+    },
+    "indexing": "all"
   },
   "metadata": {
     "timestamp": true
