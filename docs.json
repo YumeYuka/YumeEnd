@@ -36,7 +36,7 @@
         "dropdowns": [
           {
             "dropdown": "幻想乡",
-            "icon": "rss",
+            "icon": "fan",
             "groups": [
               {
                 "group": "简介",
@@ -52,8 +52,7 @@
                 "pages": [
                   "blog/Amper",
                   "blog/edgeone-trap-diary",
-                  "blog/apex-to-www",
-                  "blog/CloudPress"
+                  "blog/apex-to-www"
                 ]
               }
             ]

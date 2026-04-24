@@ -90,4 +90,10 @@ dependencies:
   - org.jetbrains.kotlinx:kotlinx-datetime:0.6.2
 ```
 
-待续...
+> Amper **项目** 由一个 `project.yaml` 文件定义。该文件包含模块列表和项目范围 配置。包含该 `project.yaml` 文件的文件夹是 **项目根**目录。模块只能在 项目根（任意深度）。如果项目中只有一个模块，则不需要该 `project.yaml` 文件。
+>
+> Amper **模块** 是一个包含 `module.yaml` 配置文件的目录，并且可选地包含源代码和资源。 _模块配置文件_ 描述了要生成 _的内容_ ：例如，一个可复用的库或一个特定平台的应用程序。 每个模块描述一个产品。多个模块不能共享相同的来源或资源，但它们可以依赖 彼此相爱。 _如何_ 生成期望的产品，也就是构建规则，是 Amper 构建引擎的责任。
+>
+> - [https://amper.org/dev/user-guide/basics/](https://amper.org/dev/user-guide/basics/)
+
+所以根目录的 `model.yaml` 可以不写,将配置合并到 `app` 里面即可,在 `project.yaml` 配置子模块,非常简洁. `gradle `~~坏~~
