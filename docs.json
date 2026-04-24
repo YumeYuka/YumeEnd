@@ -50,6 +50,7 @@
                 "group": "最新发布",
                 "icon": "calendar",
                 "pages": [
+                  "blog/Amper",
                   "blog/edgeone-trap-diary",
                   "blog/apex-to-www",
                   "blog/CloudPress"
