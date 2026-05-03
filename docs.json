@@ -56,55 +56,6 @@
                 ]
               }
             ]
-          },
-          {
-            "dropdown": "YumeBot",
-            "icon": "drafting-compass",
-            "pages": [
-              {
-                "group": "开始使用",
-                "icon": "book-open",
-                "pages": [
-                  "yumebot/index",
-                  "yumebot/guide/introduction",
-                  "yumebot/guide/quick-start",
-                  "yumebot/guide/plugin-marketplace"
-                ]
-              },
-              {
-                "group": "插件开发",
-                "icon": "code",
-                "pages": [
-                  "yumebot/guide/plugin-development"
-                ]
-              },
-              {
-                "group": "API 参考",
-                "icon": "code",
-                "pages": [
-                  "yumebot/api/listeners",
-                  "yumebot/api/messages",
-                  "yumebot/api/groups",
-                  "yumebot/api/friends"
-                ]
-              },
-              {
-                "group": "协议文档",
-                "icon": "file-text",
-                "pages": [
-                  "yumebot/protocol/events",
-                  "yumebot/protocol/segments",
-                  "yumebot/protocol/filters"
-                ]
-              },
-              {
-                "group": "更新日志",
-                "icon": "history",
-                "pages": [
-                  "yumebot/update/history"
-                ]
-              }
-            ]
           }
         ]
       }
