@@ -1,7 +1,7 @@
 {
   "$schema": "https://mintlify.com/docs.json",
-  "theme": "aspen",
-  "name": "梦璃",
+  "theme": "mint",
+  "name": "桜川夢璃",
   "description": "真正的成长并非抹杀过去的自己，而是在接纳伤痛后,依然有选择善良的勇气",
   "colors": {
     "primary": "#358e98",
@@ -19,20 +19,6 @@
     "languages": [
       {
         "language": "zh",
-        "global": {
-          "anchors": [
-            {
-              "anchor": "Github",
-              "icon": "github",
-              "href": "https://github.com/YumeYuka"
-            },
-            {
-              "anchor": "加入群组",
-              "icon": "telegram",
-              "href": "https://join.oom-wg.dev"
-            }
-          ]
-        },
         "dropdowns": [
           {
             "dropdown": "幻想乡",
@@ -75,14 +61,14 @@
       "rating": "general",
       "revisit-after": "7 days",
       "language": "zh-CN",
-      "copyright": "梦璃 YumeYuka",
+      "copyright": "桜川梦璃 YumeYuka",
       "distribution": "global",
       "HandheldFriendly": "True",
       "MobileOptimized": "320",
       "apple-mobile-web-app-capable": "yes",
       "apple-mobile-web-app-status-bar-style": "black",
-      "apple-mobile-web-app-title": "梦璃",
-      "application-name": "梦璃",
+      "apple-mobile-web-app-title": "桜川夢璃",
+      "application-name": "桜川夢璃",
       "msapplication-TileColor": "#f56c6c",
       "og:type": "website",
       "og:image": "https://s3.yumeyuka.plus/2025/23-22-30.webp",
@@ -123,5 +109,8 @@
   },
   "interaction": {
     "drilldown": true
+  },
+  "fonts": {
+    "family": "Ubuntu"
   }
 }
