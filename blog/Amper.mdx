@@ -1,23 +1,29 @@
 ---
-title: "浅浅尝试 Amper "
+title: "尝鲜  Kotlin Toolchain  "
 icon: "axe"
 sidebarTitle: "浅浅尝试 Amper"
 ---
 
 <Frame>
   <img
-    src="/images/amper/photo_2026-05-03_19-35-29.jpg"
+    src="/images/amper/photo_2026-06-16_23-55-48.jpg"
     noZoom={true}
   />
 </Frame>
 
 <Note>
-  `jetbrains` 在 3 月 31 号 在 blog 上发了这篇文章,在此之前完全没有注意到 `Amper` 这个东西,也是抱着试试水的浅浅尝试一下,粗略的看了一下文档,大概就是想统一全平台构建的体验,天下苦 `Gradle` 久矣
+  `jetbrains` 在 3 月 31 号 在 blog 上发了这篇文章，在此之前完全没有注意到 `Amper` 这个东西，也是抱着试试水的浅浅尝试一下，粗略的看了一下文档，大概就是想统一全平台构建的体验，天下苦 `Gradle` 久矣
 </Note>
+
+> **这不得尝尝咸淡**    
 
 ### 浅浅喷一下 Google 在 Idea 中支持的 Android 插件
 
-众所周知,Android Studio 是由开源的 Idea 改来的,仅面向 Android 开发,内置 Android AGP 各种特性,以及,Google 账号登录支持,(ps: 不知道为什么什么东西都能加上Google登录),通常 Google 这边的在 AS 的特性上是落后于 Idea 的,例如 jetbrains 之前 feat 的一个进 10 年的 [issue](https://youtrack.jetbrains.com/issue/IJPL-793/Microsoft-word-style-animated-cursor) : `smooth cursor` AS 确实是跟不上,但是 Android 插件绝对是一坨大的, 在 AGP 支持上卡在一个关键节点 AGP9 , 即使 AS 已经 AGP 都 `9.2.0` 了
+众所周知，Android Studio 是由开源的 Idea 改来的，仅面向 Android 开发，内置 Android AGP 各种特性，以及，Google 账号登录支持，(ps: 不知道为什么什么东西都能加上Google登录)，通常 Google 这边的在 AS 的特性上是落后于 Idea 的，例如 jetbrains 之前 feat 的一个进 10 年的 [issue](https://youtrack.jetbrains.com/issue/IJPL-793/Microsoft-word-style-animated-cursor) : `smooth cursor` AS 确实是跟不上，但是 Android 插件绝对是一坨大的， 在 AGP 支持上卡在一个关键节点 AGP9 ， 即使 AS 已经 AGP 都 `9.2.0` 了
+
+<Tip>
+  截止 2026 年 6 月 1 日，Android 插件一跟进 AGP 并升级到 `9.0.1`
+</Tip>
 
 <Frame>
   <img
@@ -26,13 +32,13 @@ sidebarTitle: "浅浅尝试 Amper"
   />
 </Frame>
 
-Idea 支持的 Android 插件在插件市场有着 2.0 的顶级评分,感觉如果不是有 1 星的限制 大多数人 1星也不想打, 在 2026 4 月 24 号, 在最新的 Android 插件中 AGP 支持仅为 9.0.0-Alpha06 ,顺带一提,插件更新日志还是写去年 1 月的东西,如此落后,靠 Android 插件在 Idea 中支持显然不可能在开发环境中接触到这种前沿东西,即使如此,Android插件仍然划分了 Idea 支持版本,如果要使用 AGP 9.0.0-Alpha06, 那么必须 使用 Idea 26.1,当然在几个月之前要使用 EAP 版才能使用
+Idea 支持的 Android 插件在插件市场有着 2.0 的顶级评分，感觉如果不是有 1 星的限制 大多数人 1星也不想打， 在 2026 4 月 24 号， 在最新的 Android 插件中 AGP 支持仅为 9.0.0-Alpha06 ，顺带一提，插件更新日志还是写去年 1 月的东西，如此落后，靠 Android 插件在 Idea 中支持显然不可能在开发环境中接触到这种前沿东西，即使如此，Android插件仍然划分了 Idea 支持版本，如果要使用 AGP 9.0.0-Alpha06， 那么必须 使用 Idea 26.1，当然在几个月之前要使用 EAP 版才能使用
 
-卡 AGP 版本直接带来的影响就是卡 KSP, 因为在新版本中内置了 kotlin 插件,如何在适当的版本号正常构建出内容,如何适当升级 KSP 版本,如果要把 KSP 版本和 kotlin 版本支持对齐,那么你大概率会得到 …
+卡 AGP 版本直接带来的影响就是卡 KSP， 因为在新版本中内置了 kotlin 插件，如何在适当的版本号正常构建出内容，如何适当升级 KSP 版本，如果要把 KSP 版本和 kotlin 版本支持对齐，那么你大概率会得到 …
 
 > KSP is not compatible with Android Gradle Plugin's built-in Kotlin prior to AGP version 9.0.0-alpha12. Please upgrade to AGP 9.0.0-alpha12 or alternatively disable built-in kotlin by adding android.builtInKotlin=false and android.newDsl=false to gradle.properties and apply kotlin("android") plugin
 
-###  初始化第一个 Amper 项目
+### 初始化第一个 Amper 项目
 
 <Tree>
   <Tree.Folder name="my-module" defaultOpen>
@@ -96,4 +102,17 @@ dependencies:
 >
 > - [https://amper.org/dev/user-guide/basics/](https://amper.org/dev/user-guide/basics/)
 
-所以根目录的 `model.yaml` 可以不写,将配置合并到 `app` 里面即可,在 `project.yaml` 配置子模块,非常简洁. `gradle `~~坏~~
+所以根目录的 `model.yaml` 可以不写，将配置合并到 `app` 里面即可，在 `project.yaml` 配置子模块
+
+## 后续
+
+<iframe src="https://www.youtube.com/embed/MmwBJbzWbV0" title="YouTube video player" frameborder="0" className="w-full aspect-video rounded-xl" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen />
+
+- [KotlinConf’26 Keynote](https://blog.jetbrains.com/kotlin/2026/05/kotlinconf26-keynote-highlights/)
+- [kotlin-toolchain](https://github.com/JetBrains/kotlin-toolchain)
+
+Kotlinconf 上宣布了 [kotlin-toolchain](https://github.com/JetBrains/kotlin-toolchain)，并宣布将 amper 作为重要部分组成，总结来说就是 amper 在 `0.10.0` 之后进入了 kotlin 工具链中，此外还有 ktfmt
+
+<Frame>
+  ![图片](/images/图片.png)
+</Frame>
