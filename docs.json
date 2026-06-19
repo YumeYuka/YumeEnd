@@ -36,6 +36,7 @@
                 "group": "最新发布",
                 "icon": "calendar",
                 "pages": [
+                  "blog/Yume",
                   "blog/Amper",
                   "blog/edgeone-trap-diary",
                   "blog/apex-to-www"
