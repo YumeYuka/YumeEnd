@@ -1,5 +1,21 @@
 ---
-title: "空"
+sidebarTitle: "Cmake 笔记"
+tag: "Latest "
+title: "Cmake 笔记"
 ---
+
+Cmake 是一套围绕 **C/CPP** 的 元构建系统，Cmake 并不属于直接编译器工具链，而是生成对应平台上构建系统所需要的构建文件
+
+由于 CPP 的 ABI （_Application Binary Interface_） 并不固定，不同编译器、不同标准库、不同架构、不同操作系统之间可能存在 ABI 差异，因此在跨平台构建和工具链中，通常使用目标三元组（_Target Triple_）来描述编译目标环境， `<arch>-<vendor>-<os>`
+
+```text
+// 例如
+x86_64-pc-linux-gnu
+
+// Android 上常见的
+aarch64-linux-android
+```
+
+例如常见的编译器有 `GCC MSVC` `Clang` 分别对应 Linux Windows 和 MacOS 上的编译的工具链，Cmake 做的就是生成这些所需要构建文件
 
 这里什么都没有，没有什么可以学习的内容

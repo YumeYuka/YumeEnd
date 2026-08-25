@@ -1,0 +1,44 @@
+---
+title: "Android 打包体积优化一些总结研究"
+---
+
+之前没太深入了解过 Android 的一些机制，所以并不清楚这些内容
+
+# 问题引入
+
+之前在 Android 端 App 开发中集成 [Sub-Store](https://github.com/sub-store-org/Sub-Store) 学习了 SubCase 这样的一个做法，后端是由 [Javet](https://github.com/caoccao/Javet)
+
+驱动的这么一个方法
+
+<GitHub.Repo repo="sionnx/SubCase" />
+
+![Release Sub Case](/images/Release-SubCase.png "Release Sub Case")
+
+Release 打包之后的 Apk 大小居然有 80M，这还是不算其他的，仅仅是 Sub-Store 这么一个 feature 引入大小体积就变化这么大，解包之后发现绝大多数体积都来自 Javet 这么一个库，而且发现并未启用旧版打包方式来压缩体积，衡量一下对比发现，在省流量和省体积之间选择前者收益应该是高一点的，然后就发了一个 PR  [https://github.com/sionnx/SubCase/pull/4](https://github.com/sionnx/SubCase/pull/4)
+
+```kotlin wrap
+// https://developer.android.com/reference/tools/gradle-api/8.0/com/android/build/api/dsl/JniLibsPackagingOptions#useLegacyPackaging()
+
+// var useLegacyPackaging: Boolean?
+
+useLegacyPackaging = true
+```
+
+启用之后看起来打包体积优化收益还是挺高的，**82MB → 22 MB** ，但是对在 YumeBox 中已经打包 Mihomo 作为内核情况下体积还是有一些大。作为扩展性 feature 可选性比较重要，并不需要强制打包在内，需要时扩展下载即可，例如 Mt 管理器的模拟终端扩展包
+
+# 实现
+
+那么如果要实现集成 [Sub-Store](https://github.com/sub-store-org/Sub-Store) 这个 feature ，那么 Javet 肯定是绕不开的，如果做成扩展插件属性会不会可行？ 答案是肯定的，Mt 管理器就是这么做的，将 二进制文件封装到扩展包中 Lib
+
+<FileTree>
+  * 扩展 App/
+    * assets
+    * lib/
+      * arm64-v8a/
+        * adb
+        * bash
+        * More Binary
+  * META-INF
+  * res
+  * ...
+</FileTree>
