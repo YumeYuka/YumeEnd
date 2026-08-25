@@ -7,9 +7,7 @@ icon: "package-check"
 
 # 问题引入
 
-之前在 Android 端 App 开发中集成 [Sub-Store](https://github.com/sub-store-org/Sub-Store) 学习了 SubCase 这样的一个做法，后端是由 [Javet](https://github.com/caoccao/Javet)
-
-驱动的这么一个方法
+之前在 Android 端 App 开发中集成 [Sub-Store](https://github.com/sub-store-org/Sub-Store) 学习了 SubCase 这样的一个做法，后端是由 [Javet](https://github.com/caoccao/Javet)驱动的这么一个方法
 
 <GitHub.Repo repo="sionnx/SubCase" />
 
@@ -17,7 +15,7 @@ icon: "package-check"
 
 Release 打包之后的 Apk 大小居然有 80M，这还是不算其他的，仅仅是 Sub-Store 这么一个 feature 引入大小体积就变化这么大，解包之后发现绝大多数体积都来自 Javet 这么一个库，而且发现并未启用旧版打包方式来压缩体积，衡量一下对比发现，在省流量和省体积之间选择前者收益应该是高一点的，然后就发了一个 PR  [https://github.com/sionnx/SubCase/pull/4](https://github.com/sionnx/SubCase/pull/4)
 
-```kotlin wrap
+```kotlin
 // https://developer.android.com/reference/tools/gradle-api/8.0/com/android/build/api/dsl/JniLibsPackagingOptions#useLegacyPackaging()
 
 // var useLegacyPackaging: Boolean?
