@@ -1,8 +1,8 @@
 ---
-title: 给代码塞点新玩具
-icon: cpu
+title: "给代码塞点新玩具"
+icon: "cpu"
 image: "httsp://yumeyuka.moe/blog/load-so-kernel-switch/image.webp"
-tag: Latest 
+tag: "Latest"
 ---
 
 <Frame>
@@ -27,7 +27,7 @@ tag: Latest
 
 <GitHub.Repo repo="YumeYucca/YumeBox" />
 
-从实际运行效果来看，这套 JNI Bridge 表现确实相当稳定；加之上游内核并未提供 Android Gomobile 绑定，CMFA Core 的 FFI 方案可以说是最佳实践
+从实际运行效果来看，这套 JNI Bridge 表现确实相当稳定；加之上游内核并未提供 Android Go mobile 绑定，CMFA Core 的 `FFI `方案可以说是最佳实践
 
 但在桌面端和 Web 面板间的通信，则是选择另一种方式 [REST API](https://wiki.metacubex.one/api/)，由内核提供的 API
 
@@ -38,7 +38,7 @@ tag: Latest
 
 ClashMetaForAndroid 的这套 JNI Bridge 的 FFI 方案，虽然确实稳定可用，但在不断的迭代中，手写 JNI 的**维护成本与链路复杂度**逐渐显现出来
 
-```mermaid placement actions={true}
+```mermaid actions={true}
 flowchart LR
     A["Kotlin UI / Service"] --> B["JNI Bridge"]
     B --> C["C / CGO 胶水层"]
@@ -47,8 +47,7 @@ flowchart LR
     B -."配置、线程、异常、对象生命周期".-> E["跨语言状态耦合"]
 ```
 
-Core 部分的代码占比并不小，同时存在 Cgo 和 C 以及 JNI，但是耦合太重，如果要增加一些新的 feature 时，就要同时改动 `CGO`  `C/JNI` 和 `kotlin` 部分，太过繁琐
-
+Core 部分的代码占比并不小，同时存在 `CGO`  和 C 以及 JNI，但是耦合太重，如果要增加一些新的 feature 时，就要同时改动 `CGO`  `C/JNI` 和 `kotlin` 部分，太过繁琐
 
 <Frame>
   <img
@@ -59,15 +58,15 @@ Core 部分的代码占比并不小，同时存在 Cgo 和 C 以及 JNI，但是
 
 ## Root 权限下 Tun 的运行
 
-在 Android 设备上，Mihomo 运行由 App 建立 VPN service 路由流量，受限于 Root 权限的缺失，并不是 Native Tun 的实现
+在 Android 设备上，Mihomo 运行由 App 建立 `VPN service`路由流量，受限于 Root 权限的缺失，并不是 **Native Tun** 的实现
 
 成熟的 Root 方案例如 KernelSU Magisk 等，且用户群体也不少，但是大多数都在使用 Magisk 模块的透明代理。于是开箱即用的 Tun 实现成为了目标的 feature 之一
 
-但问题出现各个层面，起初的解决方案是，是由 Libsu 直接创建 Root service，补齐 JNI 侧的传参即可，但新的问题接踵而至，在设计中，由 Root 权限创建的进程或者 service 应该不跟随 App 的生命周期，换句话说就是，当 APP 被系统或者主动 kill 掉时，仍在代理流量
+但问题出现各个层面，起初的解决方案是，是由 [Libsu](https://github.com/topjohnwu/libsu) 直接创建 Root service，补齐 JNI 侧的传参即可，但新的问题接踵而至，在设计中，由 `Root `权限创建的进程或者 service 应该不跟随 App 的生命周期，换句话说就是，当 APP 被系统或者主动 kill 掉时，仍在代理流量
 
-由 `su` 拉起的 Root 核心，本质上应该是一个独立的守护进程：App 被系统回收以后，核心不应该立刻停止，代理流量也不应该突然中断。可如果核心完全依赖 JNI 和绑定 Service，那么 App 重启以后，之前的进程状态、控制连接和配置都很难恢复
+由 `su` 拉起的 `Root `核心，本质上应该是一个独立的守护进程：App 被系统回收以后，核心不应该立刻停止，代理流量也不应该突然中断。可如果核心完全依赖 `JNI `和绑定 `Service`，那么 `App `重启以后，之前的进程状态、控制连接和配置都很难恢复
 
-```mermaid placement actions={true}
+```mermaid actions={true}
 flowchart LR
     A["App 启动 Root Service"] --> B["JNI 直接拉起核心"]
     B --> C["核心创建 Root Tun"]
@@ -76,10 +75,9 @@ flowchart LR
     F --> G["App 重启后难以恢复"]
 ```
 
-
 ## 核心与壳
 
-经过研究发现，**将 Share 换成 PIE 执行**，可以解决 Core 的复用问题，将 JNI Bridge 重写实现，做一个的壳，只需要将核心部分拉起运行即可，顺带解决了 JNI 通信状态回连，是有 Unix Socket 通信，当然，这是标准做法
+经过研究发现，**将 Share 换成 PIE 执行**，可以解决 Core 的复用问题，将 JNI Bridge 重写实现，做一个的壳，只需要将核心部分拉起运行即可，顺带解决了 JNI 通信状态回连，由 `Unix Socke`t 通信，当然，这是标准做法
 
 <Frame>
   <img
@@ -88,7 +86,7 @@ flowchart LR
   />
 </Frame>
 
-当然，这里会出现另一个问题：如果直接将内核打包成可执行文件，就会像上一篇文章中提到的那样——在将 lib 打包并压缩，但这里已经是 PIE 可执行文件，并不是 share 共享库。这就会导致可执行权限丢失，而且另一个问题是，在安卓上，安卓 SDK 29 限制了可执行文件的运行位置：在宿主私有目录是不能直接运行可执行文件的，能运行的位置只有 APP 解压之后的 lib 目录
+当然，这里会出现另一个问题：如果直接将内核打包成可执行文件，就会像上一篇文章中提到的那样——在将 lib 打包并压缩，但这里已经是 PIE 可执行文件，并不是 share 共享库。这就会导致可执行权限丢失，而且另一个问题是，在安卓上，<u>安卓 SDK 29 限制了可执行文件的运行位置：在宿主私有目录是不能直接运行可执行文件的，能运行的位置只有 APP 解压之后的 lib 目录</u>
 
 所以这就在打包时出现了一个问题：真正收益大小带来的主要是核心的打包，但如果核心坚持作为 PIE 可执行文件，那么后面就没有办法继续作为 load 共享库。最后确定的方向是：核心仍然编译成共享库，但不再让 Kotlin 直接加载并调用大量 Go 导出函数。新增一个很小的 PIE 启动壳，由它负责 `dlopen` 真正的 `libmihomocore.so`，再调用唯一的 `MihomoMain` 入口
 
@@ -121,7 +119,6 @@ if (socketpair(AF_UNIX, SOCK_SEQPACKET, 0, channel) < 0) {
     /* 通信通道创建失败，核心不能继续启动 */
 }
 ```
-
 
 之所以选择 `SOCK_SEQPACKET`，是因为它保留了消息边界。配置可以分成多条消息发送，核心每次读取到的就是一条完整消息，不需要额外设计长度头，也不会出现 TCP 常见的粘包和半包问题
 
@@ -188,7 +185,7 @@ private fun protectCoreSocket(fd: Int): String = try {
 
 而壳层并不会影响核心的加载，因为不同内核的入口点都是一样的
 
-至于内核的切换方案，基本上可以直接从云端获取。但是 Android 端受限于共享库，而不是官方提供的可执行文件，所以我们需要单独创建一个工作流，实时同步上游源码，然后构建出对应的内核
+至于内核的切换方案，基本上可以直接从**云端获取**。但是 Android 端受限于共享库，而不是官方提供的可执行文件，所以我们需要单独创建一个工作流，实时同步上游源码，然后构建出对应的内核
 
 这也是后来 smart 分支不再单独构建，而是直接合并到主项目中，通过切换的方式使用的原因
 
@@ -204,9 +201,9 @@ private fun protectCoreSocket(fd: Int): String = try {
 
 例如 FlClash 的内核并不是直接实时同步上游源码进行构建，而是在 fork 源码之后，再 Patch 到源码中创建 FFI 接口
 
-当然，在大多数情况下，我们并不希望对上游源码进行过多修改
+**当然，在大多数情况下，我们并不希望对上游源码进行过多修改**
 
-所以这套方案总结下来，真正修改的部分其实只有构建限制 tag。换句话说，在尽可能不修改上游源码的情况下，实现了完整的 Root 内核进程、TUN 以及内核切换
+<u>所以这套方案总结下来，真正修改的部分其实只有构建限制 tag。换句话说，在尽可能不修改上游源码的情况下，实现了完整的 Root 内核进程、TUN 以及内核切换</u>
 
 ## 自定义图标扩展
 
