@@ -37,7 +37,8 @@
                 "icon": "calendar",
                 "pages": [
                   "blog/load-so-kernel-switch/index",
-                  "blog/apk-shrink/index"
+                  "blog/apk-shrink/index",
+                  "blog/llvm/index"
 
                 ]
               }
@@ -109,8 +110,5 @@
   },
   "interaction": {
     "drilldown": true
-  },
-  "fonts": {
-    "family": "Ubuntu"
   }
 }
