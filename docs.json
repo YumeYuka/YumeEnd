@@ -36,8 +36,9 @@
                 "group": "最新发布",
                 "icon": "calendar",
                 "pages": [
-                  "blog/apk-shrink/index",
-                  "blog/load-so-kernel-switch/index"
+                  "blog/load-so-kernel-switch/index",
+                  "blog/apk-shrink/index"
+
                 ]
               }
             ]

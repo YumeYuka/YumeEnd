@@ -1,9 +1,8 @@
 ---
-title: "让 APK 轻一点"
-icon: "package-check"
-"og:image": "https://yumeyuka.moe/blog/apk-shrink/image.webp"
+title: 让 APK 轻一点
+icon: package-check
+og:image: "https://yumeyuka.moe/blog/apk-shrink/image.webp"
 ---
-
 
 <Frame>
   <img
@@ -12,7 +11,7 @@ icon: "package-check"
   />
 </Frame>
 
-***过去对 Android 内部的一些机制了解得并不深入，所以这些内容之前也没有怎么接触过***
+**_过去对 Android 内部的一些机制了解得并不深入，所以这些内容之前也没有怎么接触过_**
 
 # 问题引入
 
@@ -26,7 +25,6 @@ icon: "package-check"
     noZoom={true}
   />
 </Frame>
-
 
 Release 打包之后的 Apk 大小居然有 80M，这还是不算其他的，仅仅是 Sub-Store 这么一个 feature 引入大小体积就变化这么大，解包之后发现绝大多数体积都来自 Javet 这么一个库，而且发现并未启用旧版打包方式来压缩体积，衡量一下对比发现，在省流量和省体积之间选择前者收益应该是高一点的，然后就发了一个 PR  [https://github.com/sionnx/SubCase/pull/4](https://github.com/sionnx/SubCase/pull/4)
 
@@ -179,7 +177,7 @@ tasks.register<Exec>("compressJavetNative") {
 
 **那么结论就是并不需要可执行权限，放到宿主私有目录即可，即所有组为 App**
 
-```mermaid placement="top-right"
+```mermaid placement="top-right" actions={true}
 %%{init: {'flowchart': {'defaultRenderer': 'elk'}}}%%
 flowchart LR
     A[App 初始化] --> B[检测目标 SO]
