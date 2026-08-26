@@ -1,6 +1,7 @@
 ---
 title: "让 APK 轻一点"
 icon: "package-check"
+"og:image": "./image.png"
 ---
 
 之前没太深入了解过 Android 的一些机制，所以并不清楚这些内容
@@ -11,7 +12,13 @@ icon: "package-check"
 
 <GitHub.Repo repo="sionnx/SubCase" />
 
-![Release Sub Case](/images/Release-SubCase.png "Release Sub Case")
+<Frame>
+  <img
+    src="./release-subcase.png"
+    noZoom={true}
+  />
+</Frame>
+
 
 Release 打包之后的 Apk 大小居然有 80M，这还是不算其他的，仅仅是 Sub-Store 这么一个 feature 引入大小体积就变化这么大，解包之后发现绝大多数体积都来自 Javet 这么一个库，而且发现并未启用旧版打包方式来压缩体积，衡量一下对比发现，在省流量和省体积之间选择前者收益应该是高一点的，然后就发了一个 PR  [https://github.com/sionnx/SubCase/pull/4](https://github.com/sionnx/SubCase/pull/4)
 
@@ -373,7 +380,12 @@ final class ApplicationBridge {
 
 仅仅是 Mihome 官方 Release 发布大小也差不多接近 YumeBox 更新时安装包大小，(相当于仅更新内核了说是)
 
-![Mihome Core Size](/images/Release-Mihomo.png)
+<Frame>
+  <img
+    src="./release-mihomo.png"
+    noZoom={true}
+  />
+</Frame>
 
 以下均统计打包 Geo 文件的时比对
 

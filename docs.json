@@ -2,7 +2,7 @@
   "$schema": "https://mintlify.com/docs.json",
   "theme": "maple",
   "name": "桜川夢璃",
-  "description": "真正的成长并非抹杀过去的自己，而是在接纳伤痛后,依然有选择善良的勇气",
+  "description": "忘れたままでも生きてゆける,それでも",
   "colors": {
     "primary": "#358e98",
     "light": "#fbf7f7",
@@ -36,7 +36,8 @@
                 "group": "最新发布",
                 "icon": "calendar",
                 "pages": [
-                  "blog/apk-shrink"
+                  "blog/apk-shrink/index",
+                  "blog/load-so-kernel-switch/index"
                 ]
               }
             ]
@@ -69,8 +70,8 @@
       "application-name": "桜川夢璃",
       "msapplication-TileColor": "#f56c6c",
       "og:type": "website",
-      "og:image": "https://s3.yumeyuka.plus/2025/23-22-30.webp",
-      "og:site_name": "真正的成长并非抹杀过去的自己，而是在接纳伤痛后,依然有选择善良的勇气",
+      "og:image": "/images/Yume.webp",
+      "og:site_name": "忘れたままでも生きてゆける,それでも",
       "og:locale": "zh_CN",
       "canonical": "https://yumeyuka.icu"
     },
