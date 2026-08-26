@@ -23,13 +23,11 @@ Release 打包之后的 Apk 大小居然有 80M，这还是不算其他的，仅
 useLegacyPackaging = true
 ```
 
-启用之后看起来打包体积优化收益还是挺高的，**82MB → 22 MB** ，但是对在 YumeBox 中已经打包 Mihomo 作为内核情况下体积还是有一些大。
-作为扩展性 feature 可选性比较重要，并不需要强制打包在内，需要时扩展下载即可，例如 Mt 管理器的模拟终端扩展包
+启用之后看起来打包体积优化收益还是挺高的，**82MB → 22 MB** ，但是对在 YumeBox 中已经打包 Mihomo 作为内核情况下体积还是有一些大。 作为扩展性 feature 可选性比较重要，并不需要强制打包在内，需要时扩展下载即可，例如 Mt 管理器的模拟终端扩展包
 
 ## Extension APK 方案
 
-那么如果要实现集成 [Sub-Store](https://github.com/sub-store-org/Sub-Store) 这个 feature ，那么 Javet 肯定是绕不开的，
-如果做成扩展插件属性会不会可行？ 答案是肯定的，Mt 管理器就是这么做的，将 二进制文件封装到扩展包中 `Lib`
+那么如果要实现集成 [Sub-Store](https://github.com/sub-store-org/Sub-Store) 这个 feature ，那么 Javet 肯定是绕不开的， 如果做成扩展插件属性会不会可行？ 答案是肯定的，Mt 管理器就是这么做的，将 二进制文件封装到扩展包中 `Lib`
 
 <FileTree>
   * 扩展 App/
@@ -46,7 +44,7 @@ useLegacyPackaging = true
 
 那么做法就是在打包时候将 `Javet` 这个库排除不进行打包
 
-```kotlin build.gradle.kts icon="code" focus={3}
+```kotlin build.gradle.kts icon=code focus={3}
 packaging {
     jniLibs {
         excludes += listOf("lib/**/libjavet*.so")
@@ -55,18 +53,15 @@ packaging {
 }
 ```
 
-
-现在是将 `Javet` 不包含的打包，那么真正需要用到的时候需要去下载扩展包 [Extension Apk Demo](https://github.com/YumeYucca/YumeBox/tree/Moe/extension)，
-在 `AndroidManifest.xml` 声明权限，Android 的 应用可见性（**Package Visibility** ）机制.
+现在是将 `Javet` 不包含的打包，那么真正需要用到的时候需要去下载扩展包 [Extension Apk Demo](https://github.com/YumeYucca/YumeBox/tree/Moe/extension)， 在 `AndroidManifest.xml` 声明权限，Android 的 应用可见性（**Package Visibility** ）机制.
 
 ```xml
 <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES"/>
 ```
 
-当然扩展 app 仅仅是一个容器作用，不需要时间的代码和依赖加入，将代码和依赖默认附加的内容排除，做到最简化
-详见 [YumeBox/blob/Moe/extension/build.gradle.kt](shttps://github.com/YumeYucca/YumeBox/blob/Moe/extension/build.gradle.kts)
+当然扩展 app 仅仅是一个容器作用，不需要时间的代码和依赖加入，将代码和依赖默认附加的内容排除，做到最简化 详见 [YumeBox/blob/Moe/extension/build.gradle.kt](shttps://github.com/YumeYucca/YumeBox/blob/Moe/extension/build.gradle.kts)
 
-```kotlin build.gradle.kts icon="code" expandable
+```kotlin build.gradle.kts expandable icon=code
 plugins {
     id("com.android.application")
 }
@@ -160,14 +155,12 @@ tasks.register<Exec>("compressJavetNative") {
 }
 ```
 
-那么做壳完成之后具体将 `Javet` 库打包到扩展 App 之后应该怎么做呢？直接时候 load 其实就可以。其实这里将库打包到扩展包中还有另一个用途，
-由于之前的误判，认为 `libxxx.so` 可执行权限才可以正常 load。打包扩展包另一个用途便是从扩展包的 Libs 直接 Load，
-~~好像是这样，还是复制一份到私有目录然后 load 来着，忘记了~~
+那么做壳完成之后具体将 `Javet` 库打包到扩展 App 之后应该怎么做呢？直接时候 load 其实就可以。其实这里将库打包到扩展包中还有另一个用途， 由于之前的误判，认为 `libxxx.so` 需要可执行权限才可以正常 load。打包扩展包另一个用途便是从扩展包的 lib 解压保留可执行权限， ~~好像是这样，还是复制一份到私有目录然后 load 来着，忘记了~~
 
 相关的 issue
 
-- https://github.com/LuckyPray/DexKit/issues/24
-- https://github.com/android/ndk/issues/979
+- [https://github.com/LuckyPray/DexKit/issues/24](https://github.com/LuckyPray/DexKit/issues/24)
+- [https://github.com/android/ndk/issues/979](https://github.com/android/ndk/issues/979)
 
 **那么结论就是并不需要可执行权限，放到宿主私有目录即可，即所有组为 App**
 
@@ -200,19 +193,15 @@ flowchart LR
 
 # 资源压缩
 
-上面有提到对于 `Libxxx.so` Load  **不需要可执行权限，放到宿主私有目录即可**，
-那么从网络下载 download 也属于这一类，放到宿主私有目录然后 Load，进一步的省去了安装扩展包的复杂性
+上面有提到对于 `Libxxx.so` Load  **不需要可执行权限，放到宿主私有目录即可**， 那么从网络下载 download 也属于这一类，放到宿主私有目录然后 Load，进一步的省去了安装扩展包的复杂性
 
-那么这样 Javet 体积问题就解决了，那么能不能对 YumeBox 进一步瘦身呢？ 有的有的，还可以吧 Geo 等文件压缩一下，（ps：Geo 等文件并不包含 buildMRS.7z）CMFA 并未压缩这部分，
-理论可行。那么最终选择是压缩率最高但解压慢的 `xz` 算法，那么最终的收益是多少呢 15MB -> 8M，收益看起来挺可观的
+那么这样 Javet 体积问题就解决了，那么能不能对 YumeBox 进一步瘦身呢？ 有的有的，还可以吧 Geo 等文件压缩一下，（ps：Geo 等文件并不包含 buildMRS.7z）CMFA 并未压缩这部分， 理论可行。那么最终选择是压缩率最高但解压慢的 `xz` 算法，那么最终的收益是多少呢 15MB -\> 8M，收益看起来挺可观的
 
-回到 Geo 文件本身，打包进 apk 这部分属于配置兼容性，如果不存在，内核也会自动 download，亦或者内核自动更新这部分，观察下面这部分代码，CMFA 贴的，比较安装日期然后更新 Geo 文件，
-所以这部分也可以做成可选的，并不需要强制打包在 apk 内部，可通过 app 手动或者自动更新这部分，对于首次安装保持兼容性显然需要打包进去，后面如果不清除数据覆盖安装未打包的也可行
+回到 Geo 文件本身，打包进 apk 这部分属于配置兼容性，如果不存在，内核也会自动 download，亦或者内核自动更新这部分，观察下面这部分代码，CMFA 贴的，比较安装日期然后更新 Geo 文件， 所以这部分也可以做成可选的，并不需要强制打包在 apk 内部，可通过 app 手动或者自动更新这部分，对于首次安装保持兼容性显然需要打包进去，后面如果不清除数据覆盖安装未打包的也可行
 
 为了保持兼容性，一到两切就比较重要了，即使不需要 Geo 文件，首次安装也需要强制 builtin 版本
 
-
-```kotlin MainApplication.kt icon="code" expandable wrap
+```kotlin MainApplication.kt expandable icon=code
 https://github.com/MetaCubeX/ClashMetaForAndroid/blob/app/src/main/java/com/github/kr328/clash/MainApplication.kt
 
 private fun extractGeoFiles() {
@@ -259,17 +248,13 @@ private fun extractGeoFiles() {
         }
     }
 }
-
 ```
 
 ## Native 压缩尝试
 
+如果 `Geo` 文件都 `xz` 压缩打包了，那么能不能让 `so` 也压缩一下呢？上面已经证实过，宿主目录内 load 不需要可执行权限。 那么看下来，理论似乎是可行的，大体实例就是在 Java 层做一个可以， init 初始化时 load 所有的 lib
 
-如果 `Geo` 文件都 `xz` 压缩打包了，那么能不能让 `so` 也压缩一下呢？上面已经证实过，宿主目录内 load 不需要可执行权限。
-那么看下来，理论似乎是可行的，大体实例就是在 Java 层做一个可以， init 初始化时 load 所有的 lib
-
-这部分在实现时遇到了阻碍，具体原因是 lib 等由 App 自己完成解压 load，安装时并未解压设置可执行权限，导致 ELF 可执行权限丢失，
-一般正常 Load share 没什么问题
+这部分在实现时遇到了阻碍，具体原因是 lib 等由 App 自己完成解压 load，安装时并未解压设置可执行权限，导致 ELF 可执行权限丢失， 一般正常 Load share 没什么问题
 
 ```mermaid placement="top-right"
 %%{init: {'flowchart': {'defaultRenderer': 'elk'}}}%%
@@ -294,9 +279,7 @@ A[App 初始化] --> B[读取压缩资源]
 
 ## Native 解压 Loader
 
-`xz` 是一种压缩率高，但是解压慢的算法，Java 层的 load解压速度还是太慢了，选择 Native C 语言重写，仅实现需要的部分，在实际打包时候这部分 loader并不需要 xz 压缩，需要排除
-~~总不能解压工具还压缩吧~~
-
+`xz` 是一种压缩率高，但是解压慢的算法，Java 层的 load解压速度还是太慢了，选择 Native C 语言重写，仅实现需要的部分，在实际打包时候这部分 loader并不需要 xz 压缩，需要排除 ~~总不能解压工具还压缩吧~~
 
 ```C
 // https://github.com/YumeYucca/YumeBox/tree/Moe/pack/native
@@ -325,12 +308,9 @@ FetchContent_Declare(
     * resources.arsc
     * AndroidManifest.xml
     * ...
-
 </FileTree>
 
-Java 层经过编译打包后也就是 `classes.dex` 文件，如果这部分也压缩的话，那么应该由谁来负责解压自己然后 load 呢，
-嗯，方法就是做壳，自己解压自己然后 load 自己，那么原本的负责 load Native 的方法也放到壳里面，
-这样就可以实现 Java 层也压缩的效果，而且不需要额外的依赖，复用之前的 Native 解压方法即可
+Java 层经过编译打包后也就是 `classes.dex` 文件，如果这部分也压缩的话，那么应该由谁来负责解压自己然后 load 呢， 嗯，方法就是做壳，自己解压自己然后 load 自己，那么原本的负责 load Native 的方法也放到壳里面， 这样就可以实现 Java 层也压缩的效果，而且不需要额外的依赖，复用之前的 Native 解压方法即可
 
 ```mermaid placement="top-right"
 %%{init: {'flowchart': {'defaultRenderer': 'elk'}}}%%
@@ -341,12 +321,11 @@ A[App 初始化] --> B[读取压缩资源]
 
     C -->|Java 文件| D[XZ 解压]
     C -->|SO 文件| E[XZ 解压]
-
 ```
 
 那么应该怎么实现呢，详见源码 [ApplicationBridge.java](https://github.com/YumeYucca/YumeBox/blob/Moe/pack/src/dev/yume/loader/ApplicationBridge.java)
 
-```java loader icon="code" expandable
+```java loader expandable icon=code
 // https://github.com/YumeYucca/YumeBox/blob/Moe/pack/src/dev/yume/loader/
 
 final class ApplicationBridge {
@@ -388,7 +367,6 @@ final class ApplicationBridge {
 
 需要注意的是，xz Native 压缩后的资源不需要放到 Lib 目录，放到 assets 目录避免二次解压
 
-
 ## 总结
 
 至此，完成的从 Native Assets 到 Java 层的压缩，收益非常明显，如果在不打包 Geo 等文件，仅作为更新包安装时，体积大小仅 18-20 M ，（会随着内核大小而波动）即使打包 Geo 文件，那么依然是目前最小的 mihomo 客户端
@@ -399,9 +377,9 @@ final class ApplicationBridge {
 
 以下均统计打包 Geo 文件的时比对
 
-| Android 客户端 | 体积大小                         |
-| -------------  | --------------------------------- |
-| YumeBox        | 35 MB                             |
-| ClashMetaForAndroid     | 42.8 MB                 |
-| FlClash        | 52.4 MB                             |
-| ClashMi        | 43.9 MB                                 |
+| Android 客户端 | 体积大小 |
+| --- | --- |
+| YumeBox | 35 MB |
+| ClashMetaForAndroid | 42.8 MB |
+| FlClash | 52.4 MB |
+| ClashMi | 43.9 MB |
