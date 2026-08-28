@@ -1,6 +1,6 @@
 {
   "$schema": "https://mintlify.com/docs.json",
-  "theme": "maple",
+  "theme": "aspen",
   "name": "桜川夢璃",
   "description": "忘れたままでも生きてゆける,それでも",
   "colors": {
@@ -33,13 +33,20 @@
                 ]
               },
               {
-                "group": "最新发布",
+                "group": "文章",
                 "icon": "calendar",
                 "pages": [
                   "blog/load-so-kernel-switch/index",
-                  "blog/apk-shrink/index",
-                  "blog/llvm/index"
+                  "blog/apk-shrink/index"
 
+                ]
+              },
+              {
+                "group": "笔记",
+                "icon": "book-open",
+                "pages": [
+                  "notes/cmake/index",
+                  "notes/llvm/index"
                 ]
               }
             ]
@@ -88,8 +95,11 @@
       "view",
       "chatgpt",
       "claude",
-      "perplexity"
-    ]
+      "perplexity",
+      "cursor",
+      "download-pdf"
+    ],
+    "display": "toc"
   },
   "footer": {
     "socials": {
