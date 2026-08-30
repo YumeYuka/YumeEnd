@@ -119,6 +119,7 @@
     "latex": true
   },
   "interaction": {
-    "drilldown": true
+    "drilldown": true,
+    "eyebrows": "section"
   }
 }

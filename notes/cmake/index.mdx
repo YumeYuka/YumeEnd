@@ -12,3 +12,84 @@ image: "httsp://yumeyuka.moe/notes/cmake/image.webp"
 </Frame>
 
 ***こういう絵、目開いてる方が激重感情抱いてがち***
+
+## CMake Generators
+
+**Cmake** 是一个配置程序，有时会被称为 **“元”** 构建系统， **Cmake** 并不负责编译构建整个项目，
+相反，**Cmake** 会根据环境配置、以及工具链，生成用于解决不同平台构建系统
+
+在 **Linux** 平台上常用的编译器是 `GCC`，在 **Windows** 上，常用的编译器是 `MSVC`，在 **MacOS** 上，常用的编译器是 `Clang`，对于不同的编译平台构建差异，Cmake 正是为了解决这些问题而存在的 **“元”** 构建系统
+
+
+## 安装 CMake
+
+在使用之前先安装 Cmake 环境 下载链接 https://cmake.org/download 在官网下载对应系统的安装包，Windows 是 `msi` 安装版或者 `zip` 解压后 path 添加环境变量
+
+对于 Linux 推荐是使用管理器，例如 **ArchLinux** ， 推荐 `yay` 或 `paru` 进行安装
+
+```shell Install icon="code"
+yay -S cmake
+```
+
+然后在终端输入 `cmake --version` 查看是否安装成功
+
+
+```shell Version icon="code"
+$ cmake --version
+cmake version 4.4.3
+
+CMake suite maintained and supported by Kitware (kitware.com/cmake).
+```
+
+### 使用基础知识 
+
+```shell Commad icon="code" 
+# 指定项目根目录，目录下必须包含 CMakeLists.txt 文件
+cmake -S <dir>
+
+# 指定构建目录，Cmake 会将生成的构建文件及产物输出到指定目录
+cmake -B <dir>
+
+# 构建项目，在指定的目录中运行构建
+cmake -- build <dir>
+
+```
+
+
+## 创建一个 Cmake 项目
+
+CMakeLists.txt 是 Cmake 的配置文件，有时候会被称为 **列表文件** 或者 `CML`，
+在项目中，不仅是项目顶层目录，子模块也可以包含该文件
+
+```cmake CMakeLists.txt icon="code"
+cmake_minimum_required(VERSION 3.23) # 指定 Cmake 版本
+
+project(MyProject) # 指定项目名称
+
+add_executable(MyProject main.cpp) # 添加可执行文件
+```
+
+<Tree>
+  <Tree.Folder name="MyProject" defaultOpen>
+    <Tree.Folder name="src" defaultOpen>
+      <Tree.File name="main.cpp" />
+    </Tree.Folder>
+
+    <Tree.Folder name="include">
+      <Tree.Folder name="myproject">
+        <Tree.File name="..." />
+      </Tree.Folder>
+    </Tree.Folder>
+
+    <Tree.File name="CMakeLists.txt" highlight />
+    <Tree.File name="README.md" />
+    <Tree.File name=".gitignore" />
+
+    <Tree.Folder name="build" openable={false}>
+      <Tree.File name="..." />
+    </Tree.Folder>
+  </Tree.Folder>
+</Tree>
+
+## 配置文件介绍
+
