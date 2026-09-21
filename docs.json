@@ -124,5 +124,8 @@
   },
   "background": {
     "decoration": "gradient"
+  },
+  "fonts": {
+    "family": "Ubuntu"
   }
 }
